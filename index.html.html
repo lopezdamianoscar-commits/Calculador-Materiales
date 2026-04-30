@@ -99,6 +99,37 @@ input[type=number]:focus{outline:none;border-color:#185FA5;background:#fff}
 .toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);background:#1a1a1a;color:#fff;padding:10px 20px;border-radius:8px;font-size:13px;font-weight:500;z-index:999;display:none;animation:fadein .2s}
 @keyframes fadein{from{opacity:0;transform:translateX(-50%) translateY(10px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
 .loading{text-align:center;padding:2rem;color:#999;font-size:13px}
+
+/* MODAL PDF */
+.pdf-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.5);z-index:200;align-items:center;justify-content:center}
+.pdf-overlay.open{display:flex}
+.pdf-modal{background:#fff;border-radius:12px;width:620px;max-width:95vw;max-height:90vh;overflow-y:auto;padding:0}
+.pdf-toolbar{display:flex;justify-content:space-between;align-items:center;padding:1rem 1.5rem;border-bottom:1px solid #e8e8e4}
+.pdf-toolbar-title{font-size:14px;font-weight:600;color:#1a1a1a}
+.pdf-body{padding:2rem 2.5rem}
+.pdf-header{margin-bottom:2rem;padding-bottom:1.25rem;border-bottom:2px solid #1a1a1a}
+.pdf-obra{font-size:20px;font-weight:700;color:#1a1a1a;margin-bottom:4px}
+.pdf-meta{font-size:12px;color:#555;display:flex;gap:20px;margin-top:8px}
+.pdf-meta span{display:flex;flex-direction:column}
+.pdf-meta-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#999;margin-bottom:2px}
+.pdf-meta-val{font-size:13px;font-weight:600;color:#1a1a1a}
+.pdf-section-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#999;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid #f0f0ec}
+.pdf-mat-row{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #f5f5f3;font-size:13px}
+.pdf-mat-row:last-child{border-bottom:none}
+.pdf-mat-nombre{color:#1a1a1a}
+.pdf-mat-qty{font-weight:700;color:#1a1a1a}
+.pdf-footer{margin-top:2rem;padding-top:1rem;border-top:1px solid #e8e8e4;font-size:11px;color:#999;text-align:center}
+.pdf-firma{display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin-top:2rem}
+.pdf-firma-box{border-top:1px solid #1a1a1a;padding-top:6px;font-size:11px;color:#777;text-align:center}
+
+@media print{
+  .sidebar,.pdf-toolbar,button,.toast{display:none!important}
+  .pdf-overlay{display:block!important;position:static!important;background:none!important}
+  .pdf-modal{width:100%!important;max-width:100%!important;border-radius:0!important;box-shadow:none!important;max-height:none!important}
+  .app{display:none!important}
+  body{background:#fff!important}
+}
+
 @media(max-width:700px){
   .sidebar{width:100%;height:auto;position:relative;border-right:none;border-bottom:1px solid #e8e8e4;padding:.75rem}
   .app{flex-direction:column}
@@ -347,7 +378,7 @@ input[type=number]:focus{outline:none;border-color:#185FA5;background:#fff}
     <div><div class="ptitle">Lista de materiales</div><div class="psub" id="ped-res-sub"></div></div>
     <div style="display:flex;gap:8px">
       <button class="btn btng" onclick="guardarPedido()">Guardar pedido ✓</button>
-      <button class="btn" onclick="window.print()">Exportar PDF</button>
+      <button class="btn" onclick="abrirPDFPedidoActual()">Ver PDF</button>
     </div>
   </div>
   <div id="ped-res-contenido"></div>
@@ -398,6 +429,20 @@ input[type=number]:focus{outline:none;border-color:#185FA5;background:#fff}
 </div><!-- /main -->
 </div><!-- /app -->
 <div class="toast" id="toast"></div>
+
+<!-- MODAL PDF PEDIDO -->
+<div class="pdf-overlay" id="pdf-overlay" onclick="cerrarPDF(event)">
+  <div class="pdf-modal" id="pdf-modal">
+    <div class="pdf-toolbar">
+      <span class="pdf-toolbar-title">Vista previa del pedido</span>
+      <div style="display:flex;gap:8px">
+        <button class="btn btnp" onclick="window.print()">Imprimir / Guardar PDF</button>
+        <button class="btn" onclick="cerrarPDFBtn()">Cerrar</button>
+      </div>
+    </div>
+    <div class="pdf-body" id="pdf-body"></div>
+  </div>
+</div>
 
 <script>
 const SUPABASE_URL = 'https://hzilefsxtgcqeavicfkw.supabase.co';
@@ -544,7 +589,7 @@ async function cargarPedidos() {
       <td style="color:#777">${fecha}</td>
       <td style="color:#777">${mats}</td>
       <td style="text-align:center"><div class="chk ${chkClass}" onclick="toggleEnviado('${p.id}', ${p.enviado}, this)"><svg viewBox="0 0 10 10"><polyline points="1.5,5 4,7.5 8.5,2.5"/></svg></div></td>
-      <td style="text-align:right"><button class="btn" style="padding:4px 10px;font-size:11px" onclick="window.print()">PDF</button></td>
+      <td style="text-align:right"><button class="btn" style="padding:4px 10px;font-size:11px" onclick="abrirPDFPedido('${p.id}', ${data.length - i})">PDF</button></td>
     </tr>`;
   });
   html += '</tbody></table></div>';
@@ -733,6 +778,100 @@ async function guardarPedidoDirecto() {
   const totales = leerMatsDirectos('pm');
   pedidoTotales = totales;
   await guardarPedido();
+}
+
+// ---- PDF PEDIDO ----
+async function abrirPDFPedido(pedidoId, numeroPedido) {
+  const {data: ped} = await sb.from('pedidos').select('*, pedido_materiales(*)').eq('id', pedidoId).single();
+  if(!ped) return;
+  const fecha = ped.fecha ? new Date(ped.fecha+'T12:00:00').toLocaleDateString('es-AR') : hoy();
+  const mats = ped.pedido_materiales || [];
+
+  // Agrupar materiales
+  const grupos = {};
+  for(const grp of GRUPOS_ORDEN) {
+    const items = mats.filter(m => GRUPOS_MAT[grp] && GRUPOS_MAT[grp].some(g => m.material.startsWith(g)));
+    if(items.length) grupos[grp] = items;
+  }
+
+  let tablaHTML = '';
+  for(const [grp, items] of Object.entries(grupos)) {
+    tablaHTML += `<div style="margin-bottom:1.25rem">
+      <div class="pdf-section-title">${grp}</div>`;
+    for(const m of items) {
+      tablaHTML += `<div class="pdf-mat-row">
+        <span class="pdf-mat-nombre">${m.material}</span>
+        <span class="pdf-mat-qty">${fmtVal(m.cantidad)} ${m.unidad}</span>
+      </div>`;
+    }
+    tablaHTML += '</div>';
+  }
+
+  const obra = proyActivo ? proyActivo.nombre + (proyActivo.localidad ? ' — ' + proyActivo.localidad : '') : '';
+
+  document.getElementById('pdf-body').innerHTML = `
+    <div class="pdf-header">
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#185FA5;margin-bottom:6px">Pedido de materiales</div>
+      <div class="pdf-obra">${obra}</div>
+      <div class="pdf-meta">
+        <span><span class="pdf-meta-lbl">Pedido Nº</span><span class="pdf-meta-val">#${numeroPedido}</span></span>
+        <span><span class="pdf-meta-lbl">Fecha</span><span class="pdf-meta-val">${fecha}</span></span>
+        <span><span class="pdf-meta-lbl">Estado</span><span class="pdf-meta-val">${ped.enviado ? 'Enviado al corralón' : 'Pendiente de envío'}</span></span>
+      </div>
+    </div>
+    ${tablaHTML}
+    <div class="pdf-firma">
+      <div class="pdf-firma-box">Firma responsable de obra</div>
+      <div class="pdf-firma-box">Recibido por corralón</div>
+    </div>
+    <div class="pdf-footer">Gestor de Materiales · Generado el ${hoy()}</div>
+  `;
+
+  document.getElementById('pdf-overlay').classList.add('open');
+}
+
+function cerrarPDF(e) {
+  if(e.target === document.getElementById('pdf-overlay')) cerrarPDFBtn();
+}
+function cerrarPDFBtn() {
+  document.getElementById('pdf-overlay').classList.remove('open');
+}
+
+function abrirPDFPedidoActual() {
+  // Para el pedido recién calculado (antes de guardar)
+  const obra = proyActivo ? proyActivo.nombre + (proyActivo.localidad ? ' — ' + proyActivo.localidad : '') : '';
+  const grupos = {};
+  for(const grp of GRUPOS_ORDEN) {
+    const items = Object.entries(pedidoTotales)
+      .filter(([mat]) => GRUPOS_MAT[grp] && GRUPOS_MAT[grp].some(g => mat.startsWith(g)))
+      .map(([mat,{val,u}]) => ({material:mat, cantidad:val, unidad:u}));
+    if(items.length) grupos[grp] = items;
+  }
+  let tablaHTML = '';
+  for(const [grp, items] of Object.entries(grupos)) {
+    tablaHTML += `<div style="margin-bottom:1.25rem"><div class="pdf-section-title">${grp}</div>`;
+    for(const m of items) {
+      tablaHTML += `<div class="pdf-mat-row"><span class="pdf-mat-nombre">${m.material}</span><span class="pdf-mat-qty">${fmtVal(m.cantidad)} ${m.unidad}</span></div>`;
+    }
+    tablaHTML += '</div>';
+  }
+  document.getElementById('pdf-body').innerHTML = `
+    <div class="pdf-header">
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#185FA5;margin-bottom:6px">Pedido de materiales</div>
+      <div class="pdf-obra">${obra}</div>
+      <div class="pdf-meta">
+        <span><span class="pdf-meta-lbl">Fecha</span><span class="pdf-meta-val">${hoy()}</span></span>
+        <span><span class="pdf-meta-lbl">Estado</span><span class="pdf-meta-val">Pendiente de envío</span></span>
+      </div>
+    </div>
+    ${tablaHTML}
+    <div class="pdf-firma">
+      <div class="pdf-firma-box">Firma responsable de obra</div>
+      <div class="pdf-firma-box">Recibido por corralón</div>
+    </div>
+    <div class="pdf-footer">Gestor de Materiales · Generado el ${hoy()}</div>
+  `;
+  document.getElementById('pdf-overlay').classList.add('open');
 }
 
 // Cargar proyectos al inicio
