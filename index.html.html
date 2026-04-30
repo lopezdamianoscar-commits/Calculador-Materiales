@@ -659,7 +659,7 @@ async function cargarComputo() {
   const {data: tareas} = await sb.from('proyecto_tareas').select('*').eq('proyecto_id', proyActivo.id);
   const contTareas = document.getElementById('computo-tab-tareas');
   if(!tareas || tareas.length===0) {
-    contTareas.innerHTML = '<div class="empty"><div class="empty-icon">🔨</div><div style="font-weight:600;color:#777;margin-bottom:4px">Sin tareas cargadas</div><div style="font-size:13px">Las tareas se registran al cargar pedidos por m²</div></div>';
+    contTareas.innerHTML = '<div class="empty"><div class="empty-icon">🔨</div><div style="font-weight:600;color:#777;margin-bottom:4px">Sin tareas cargadas</div><div style="font-size:13px">Cargá el proyecto por tareas (m²) para ver el avance acá</div></div>';
   } else {
     // Calcular acumulado por tarea desde pedidos
     const {data: pedTareas} = await sb.from('pedido_tareas').select('*, pedidos!inner(proyecto_id)').eq('pedidos.proyecto_id', proyActivo.id);
@@ -884,12 +884,32 @@ function calcularDesdeInputs(mapa) {
 function calcularNuevoProyecto() {
   let totales;
   if(modoNP==='tareas') {
+    // Guardar también las tareas ingresadas
+    const tareasMap = {
+      'np-brimax': {tarea:'Muro ladrillo Brimax 12.5 cm', rubro:'Mampostería', u:'m²'},
+      'np-cer12':  {tarea:'Muro ladrillo cerámico portante 12', rubro:'Mampostería', u:'m²'},
+      'np-cer18':  {tarea:'Muro ladrillo cerámico portante 18', rubro:'Mampostería', u:'m²'},
+      'np-comun':  {tarea:'Muro ladrillo común 15 cm', rubro:'Mampostería', u:'m²'},
+      'np-azotado':{tarea:'Azotado hidrófugo', rubro:'Revoques', u:'m²'},
+      'np-revgrueso':{tarea:'Revoque grueso', rubro:'Revoques', u:'m²'},
+      'np-stuko-int':{tarea:'Stuko interior', rubro:'Revoques', u:'m²'},
+      'np-stuko-ext':{tarea:'Stuko exterior', rubro:'Revoques', u:'m²'},
+      'np-contrapiso':{tarea:'Contrapiso H15', rubro:'Pisos', u:'m²'},
+      'np-ceramicos':{tarea:'Pegado de cerámicos', rubro:'Pisos', u:'m²'},
+    };
+    npData.tareas = [];
+    for(const [id, info] of Object.entries(tareasMap)) {
+      const el = document.getElementById(id);
+      const val = el ? parseFloat(el.value)||0 : 0;
+      if(val>0) npData.tareas.push({rubro: info.rubro, tarea: info.tarea, cantidad: val, unidad: info.u});
+    }
     totales = calcularDesdeInputs({
       brimax:'np-brimax', cer12:'np-cer12', cer18:'np-cer18', comun:'np-comun',
       azotado:'np-azotado', revgrueso:'np-revgrueso', stukoInt:'np-stuko-int', stukoExt:'np-stuko-ext',
       contrapiso:'np-contrapiso', ceramicos:'np-ceramicos'
     });
   } else {
+    npData.tareas = [];
     totales = leerMatsDirectos('npm');
   }
   npData.totales = totales;
@@ -951,6 +971,12 @@ async function guardarProyecto() {
     proyecto_id: proj.id, material: mat, cantidad_total: val, cantidad_pedida: 0, unidad: u
   }));
   if(mats.length) await sb.from('proyecto_materiales').insert(mats);
+
+  // Guardar tareas del proyecto
+  const tareas = (npData.tareas||[]).map(t=>({
+    proyecto_id: proj.id, rubro: t.rubro, tarea: t.tarea, cantidad: t.cantidad, unidad: t.unidad
+  }));
+  if(tareas.length) await sb.from('proyecto_tareas').insert(tareas);
 
   proyActivo = proj;
   document.getElementById('sidebar-proj-name').textContent = proj.nombre;
