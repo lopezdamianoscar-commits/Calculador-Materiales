@@ -307,7 +307,12 @@ input[type=number]:focus{outline:none;border-color:#185FA5;background:#fff}
     <div><div class="ptitle">Cómputo general</div><div class="psub" id="computo-sub"></div></div>
     <button class="btn btnd" onclick="confirmarEliminar()">Eliminar proyecto</button>
   </div>
-  <div id="computo-contenido"><div class="loading">Cargando...</div></div>
+  <div class="mode-toggle" style="margin-bottom:1rem">
+    <div class="mbtn active" onclick="setTabComputo('materiales',this)">Materiales</div>
+    <div class="mbtn" onclick="setTabComputo('tareas',this)">Tareas</div>
+  </div>
+  <div id="computo-tab-materiales"><div class="loading">Cargando...</div></div>
+  <div id="computo-tab-tareas" style="display:none"><div class="loading">Cargando...</div></div>
 </div>
 
 <!-- PEDIDOS -->
@@ -316,12 +321,38 @@ input[type=number]:focus{outline:none;border-color:#185FA5;background:#fff}
     <div><div class="ptitle">Pedidos</div><div class="psub" id="pedidos-sub"></div></div>
     <button class="btn btnp" onclick="nav('nuevo-pedido')">+ Nuevo pedido</button>
   </div>
-  <div id="pedidos-contenido"><div class="loading">Cargando...</div></div>
+  <div class="card" style="display:flex;align-items:center;gap:12px;padding:.875rem 1.25rem">
+    <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#999;white-space:nowrap">Proyecto</div>
+    <select id="ped-proyecto-sel" style="flex:1;padding:7px 9px;border:1px solid #ddd;border-radius:8px;background:#fafafa;color:#1a1a1a;font-size:13px;font-family:inherit" onchange="cambiarProyectoPedidos()">
+      <option value="">— Seleccioná un proyecto —</option>
+    </select>
+  </div>
+  <div id="pedidos-contenido"><div class="loading">Seleccioná un proyecto para ver sus pedidos</div></div>
+  <!-- Vista previa pedido seleccionado -->
+  <div id="pedido-preview" style="display:none">
+    <div class="hdr" style="margin-top:1rem;margin-bottom:.75rem">
+      <div><div style="font-size:15px;font-weight:600" id="ped-preview-titulo"></div><div class="psub" id="ped-preview-sub"></div></div>
+      <button class="btn" onclick="cerrarPedidoPreview()">← Volver a lista</button>
+    </div>
+    <div id="ped-preview-contenido"></div>
+    <div class="card" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:.875rem 1.25rem;margin-top:.5rem">
+      <span style="font-size:12px;font-weight:600;color:#777">Acciones:</span>
+      <button class="btn btnp" onclick="imprimirPedidoPreview()">Imprimir / PDF</button>
+      <button class="btn" onclick="compartirPedido()">Compartir</button>
+      <button class="btn" id="btn-toggle-enviado" onclick="toggleEnviadoPreview()">Marcar como enviado</button>
+    </div>
+  </div>
 </div>
 
 <!-- NUEVO PEDIDO -->
 <div id="pg-nuevo-pedido" class="page">
   <div class="hdr"><div><div class="ptitle">Nuevo pedido</div><div class="psub" id="pedido-sub"></div></div></div>
+  <div class="card" style="display:flex;align-items:center;gap:12px;padding:.875rem 1.25rem;margin-bottom:1rem">
+    <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#999;white-space:nowrap">Proyecto</div>
+    <select id="np-proyecto-sel" style="flex:1;padding:7px 9px;border:1px solid #ddd;border-radius:8px;background:#fafafa;color:#1a1a1a;font-size:13px;font-family:inherit" onchange="cambiarProyectoNuevoPedido()">
+      <option value="">— Seleccioná un proyecto —</option>
+    </select>
+  </div>
   <div class="mode-toggle">
     <div class="mbtn active" onclick="setModoPedido('tareas',this)">Por tareas (m²)</div>
     <div class="mbtn" onclick="setModoPedido('mats',this)">Por materiales</div>
@@ -329,22 +360,22 @@ input[type=number]:focus{outline:none;border-color:#185FA5;background:#fff}
   <div id="ped-modo-tareas">
     <div class="card">
       <div class="grp"><div class="grp-label">Mampostería</div>
-        <div class="irow"><span class="ilabel">Muro ladrillo Brimax 12.5 cm</span><input type="number" id="p-brimax" placeholder="0" min="0"><span class="iunit">m²</span></div>
-        <div class="irow"><span class="ilabel">Muro cerámico portante 12</span><input type="number" id="p-cer12" placeholder="0" min="0"><span class="iunit">m²</span></div>
-        <div class="irow"><span class="ilabel">Muro ladrillo común 15 cm</span><input type="number" id="p-comun" placeholder="0" min="0"><span class="iunit">m²</span></div>
+        <div class="irow"><span class="ilabel">Muro ladrillo Brimax 12.5 cm</span><input type="number" id="p-brimax" placeholder="0" min="0" value=""><span class="iunit">m²</span></div>
+        <div class="irow"><span class="ilabel">Muro cerámico portante 12</span><input type="number" id="p-cer12" placeholder="0" min="0" value=""><span class="iunit">m²</span></div>
+        <div class="irow"><span class="ilabel">Muro ladrillo común 15 cm</span><input type="number" id="p-comun" placeholder="0" min="0" value=""><span class="iunit">m²</span></div>
       </div>
     </div>
     <div class="card">
       <div class="grp"><div class="grp-label">Revoques</div>
-        <div class="irow"><span class="ilabel">Azotado hidrófugo</span><input type="number" id="p-azotado" placeholder="0" min="0"><span class="iunit">m²</span></div>
-        <div class="irow"><span class="ilabel">Revoque grueso</span><input type="number" id="p-revgrueso" placeholder="0" min="0"><span class="iunit">m²</span></div>
-        <div class="irow"><span class="ilabel">Stuko interior</span><input type="number" id="p-stuko" placeholder="0" min="0"><span class="iunit">m²</span></div>
+        <div class="irow"><span class="ilabel">Azotado hidrófugo</span><input type="number" id="p-azotado" placeholder="0" min="0" value=""><span class="iunit">m²</span></div>
+        <div class="irow"><span class="ilabel">Revoque grueso</span><input type="number" id="p-revgrueso" placeholder="0" min="0" value=""><span class="iunit">m²</span></div>
+        <div class="irow"><span class="ilabel">Stuko interior</span><input type="number" id="p-stuko" placeholder="0" min="0" value=""><span class="iunit">m²</span></div>
       </div>
     </div>
     <div class="card">
       <div class="grp"><div class="grp-label">Pisos</div>
-        <div class="irow"><span class="ilabel">Contrapiso H15</span><input type="number" id="p-contrapiso" placeholder="0" min="0"><span class="iunit">m²</span></div>
-        <div class="irow"><span class="ilabel">Pegado cerámicos (Klaukol)</span><input type="number" id="p-pegado" placeholder="0" min="0"><span class="iunit">m²</span></div>
+        <div class="irow"><span class="ilabel">Contrapiso H15</span><input type="number" id="p-contrapiso" placeholder="0" min="0" value=""><span class="iunit">m²</span></div>
+        <div class="irow"><span class="ilabel">Pegado cerámicos (Klaukol)</span><input type="number" id="p-pegado" placeholder="0" min="0" value=""><span class="iunit">m²</span></div>
       </div>
     </div>
     <div style="display:flex;gap:8px">
@@ -355,14 +386,14 @@ input[type=number]:focus{outline:none;border-color:#185FA5;background:#fff}
   <div id="ped-modo-mats" style="display:none">
     <div class="card">
       <div class="grp"><div class="grp-label">Áridos</div>
-        <div class="irow"><span class="ilabel">Arena gruesa</span><input type="number" id="pm-arena-g" placeholder="0" min="0"><span class="iunit">m³</span></div>
-        <div class="irow"><span class="ilabel">Arena fina</span><input type="number" id="pm-arena-f" placeholder="0" min="0"><span class="iunit">m³</span></div>
+        <div class="irow"><span class="ilabel">Arena gruesa</span><input type="number" id="pm-arena-g" placeholder="0" min="0" value=""><span class="iunit">m³</span></div>
+        <div class="irow"><span class="ilabel">Arena fina</span><input type="number" id="pm-arena-f" placeholder="0" min="0" value=""><span class="iunit">m³</span></div>
       </div>
     </div>
     <div class="card">
       <div class="grp"><div class="grp-label">Aglomerantes</div>
-        <div class="irow"><span class="ilabel">Cemento Portland</span><input type="number" id="pm-cto-port" placeholder="0" min="0"><span class="iunit">kg</span></div>
-        <div class="irow"><span class="ilabel">Cemento albañilería</span><input type="number" id="pm-cto-alb" placeholder="0" min="0"><span class="iunit">kg</span></div>
+        <div class="irow"><span class="ilabel">Cemento Portland</span><input type="number" id="pm-cto-port" placeholder="0" min="0" value=""><span class="iunit">kg</span></div>
+        <div class="irow"><span class="ilabel">Cemento albañilería</span><input type="number" id="pm-cto-alb" placeholder="0" min="0" value=""><span class="iunit">kg</span></div>
       </div>
     </div>
     <div style="display:flex;gap:8px">
@@ -376,35 +407,40 @@ input[type=number]:focus{outline:none;border-color:#185FA5;background:#fff}
 <div id="pg-pedido-resultado" class="page">
   <div class="hdr">
     <div><div class="ptitle">Lista de materiales</div><div class="psub" id="ped-res-sub"></div></div>
-    <div style="display:flex;gap:8px">
-      <button class="btn btng" onclick="guardarPedido()">Guardar pedido ✓</button>
-      <button class="btn" onclick="abrirPDFPedidoActual()">Ver PDF</button>
-    </div>
   </div>
   <div id="ped-res-contenido"></div>
-  <div style="margin-top:.5rem">
-    <button class="btn" onclick="nav('nuevo-pedido')">← Editar cantidades</button>
+  <div class="card" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:.875rem 1.25rem;margin-top:.5rem">
+    <span style="font-size:12px;font-weight:600;color:#777">Acciones:</span>
+    <button class="btn btng" onclick="guardarPedido()">Guardar pedido ✓</button>
+    <button class="btn btnp" onclick="abrirPDFPedidoActual()">Imprimir / PDF</button>
+    <button class="btn" onclick="compartirPedido()">Compartir</button>
+    <button class="btn" onclick="nav('nuevo-pedido')">← Editar</button>
   </div>
 </div>
 
 <!-- INFORMES -->
 <div id="pg-informes" class="page">
-  <div class="hdr"><div><div class="ptitle">Informes</div><div class="psub">Filtrá por proyecto, período y tipo</div></div></div>
+  <div class="hdr"><div><div class="ptitle">Informes</div><div class="psub">Seleccioná los filtros y buscá</div></div></div>
   <div class="card">
     <div class="filtros-grid">
       <div><div class="filtro-label">Proyecto</div>
         <select id="inf-proyecto" style="width:100%;padding:7px 9px;border:1px solid #ddd;border-radius:8px;background:#fafafa;color:#1a1a1a;font-size:13px;font-family:inherit">
-          <option>Cargando...</option>
+          <option value="">— Todos los proyectos —</option>
         </select>
       </div>
       <div><div class="filtro-label">Período</div>
-        <select style="width:100%;padding:7px 9px;border:1px solid #ddd;border-radius:8px;background:#fafafa;color:#1a1a1a;font-size:13px;font-family:inherit">
-          <option>Mes actual</option><option>Semana actual</option><option>Quincena actual</option>
+        <select id="inf-periodo" style="width:100%;padding:7px 9px;border:1px solid #ddd;border-radius:8px;background:#fafafa;color:#1a1a1a;font-size:13px;font-family:inherit">
+          <option value="mes">Mes actual</option>
+          <option value="semana">Semana actual</option>
+          <option value="quincena">Quincena actual</option>
+          <option value="todo">Todo</option>
         </select>
       </div>
       <div><div class="filtro-label">Tipo</div>
-        <select style="width:100%;padding:7px 9px;border:1px solid #ddd;border-radius:8px;background:#fafafa;color:#1a1a1a;font-size:13px;font-family:inherit">
-          <option>Certificado de avance</option><option>Materiales pedidos</option><option>Tareas ejecutadas</option>
+        <select id="inf-tipo" style="width:100%;padding:7px 9px;border:1px solid #ddd;border-radius:8px;background:#fafafa;color:#1a1a1a;font-size:13px;font-family:inherit">
+          <option value="pedidos">Pedidos de materiales</option>
+          <option value="certificado">Certificado de avance</option>
+          <option value="tareas">Tareas ejecutadas</option>
         </select>
       </div>
     </div>
@@ -414,15 +450,16 @@ input[type=number]:focus{outline:none;border-color:#185FA5;background:#fff}
       <label class="rubro-check-label"><input type="checkbox" checked> Revoques</label>
       <label class="rubro-check-label"><input type="checkbox"> Pisos</label>
       <label class="rubro-check-label"><input type="checkbox"> Estructura</label>
-      <button class="btn btnp" style="margin-left:auto" onclick="window.print()">Generar PDF →</button>
+      <button class="btn btnp" style="margin-left:auto" onclick="buscarInformes()">Buscar →</button>
     </div>
   </div>
-  <div class="card">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
-      <div style="font-size:14px;font-weight:600">Certificado de avance</div>
-      <div style="font-size:12px;color:#777" id="cert-sub"></div>
+  <div id="inf-resultados" style="display:none">
+    <div id="inf-contenido"></div>
+    <div class="card" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:.875rem 1.25rem">
+      <span style="font-size:12px;font-weight:600;color:#777">Acciones:</span>
+      <button class="btn btnp" onclick="window.print()">Imprimir / PDF</button>
+      <button class="btn" onclick="compartirInforme()">Compartir</button>
     </div>
-    <div id="cert-contenido"><div class="loading">Seleccioná un proyecto para ver el certificado</div></div>
   </div>
 </div>
 
@@ -494,12 +531,52 @@ function nav(id) {
   if(id==='inicio') cargarProyectos();
   if(id==='pedidos' && proyActivo) cargarPedidos();
   if(id==='computo' && proyActivo) cargarComputo();
+  if(id==='nuevo-pedido') resetNuevoPedido();
 }
 
 function hoy() { return new Date().toLocaleDateString('es-AR'); }
 
 function fmtVal(val) {
   return Number.isInteger(val) ? val.toLocaleString('es-AR') : val.toLocaleString('es-AR',{minimumFractionDigits:1,maximumFractionDigits:3});
+}
+
+function poblarSelectores(data) {
+  const opts = '<option value="">— Seleccioná un proyecto —</option>' +
+    data.map(p=>`<option value="${p.id}">${p.nombre}${p.localidad?' — '+p.localidad:''}</option>`).join('');
+  ['ped-proyecto-sel','np-proyecto-sel','inf-proyecto'].forEach(id=>{
+    const el = document.getElementById(id);
+    if(el) el.innerHTML = opts;
+  });
+  // Si hay proyecto activo, preseleccionarlo
+  if(proyActivo) {
+    ['ped-proyecto-sel','np-proyecto-sel','inf-proyecto'].forEach(id=>{
+      const el = document.getElementById(id);
+      if(el) el.value = proyActivo.id;
+    });
+  }
+}
+
+async function cambiarProyectoPedidos() {
+  const id = document.getElementById('ped-proyecto-sel').value;
+  if(!id) { document.getElementById('pedidos-contenido').innerHTML = '<div class="loading">Seleccioná un proyecto para ver sus pedidos</div>'; return; }
+  const {data} = await sb.from('proyectos').select('*').eq('id',id).single();
+  if(data) {
+    proyActivo = data;
+    document.getElementById('sidebar-proj-name').textContent = data.nombre;
+    document.getElementById('pedidos-sub').textContent = data.nombre + (data.localidad?' — '+data.localidad:'');
+    cargarPedidos();
+  }
+}
+
+async function cambiarProyectoNuevoPedido() {
+  const id = document.getElementById('np-proyecto-sel').value;
+  if(!id) return;
+  const {data} = await sb.from('proyectos').select('*').eq('id',id).single();
+  if(data) {
+    proyActivo = data;
+    document.getElementById('sidebar-proj-name').textContent = data.nombre;
+    document.getElementById('pedido-sub').textContent = data.nombre + (data.localidad?' — '+data.localidad:'') + ' · ' + hoy();
+  }
 }
 
 // ---- PROYECTOS ----
@@ -522,7 +599,10 @@ async function cargarProyectos() {
     </div>`;
   }).join('');
 
-  // Actualizar select de informes
+  // Actualizar todos los selectores de proyecto
+  poblarSelectores(data);
+
+  // Actualizar select de informes (legacy)
   const sel2 = document.getElementById('inf-proyecto');
   if(sel2) sel2.innerHTML = data.map(p=>`<option value="${p.id}">${p.nombre}${p.localidad?' — '+p.localidad:''}</option>`).join('');
 }
@@ -538,36 +618,192 @@ async function abrirProyecto(id) {
   nav('computo');
 }
 
+// ---- PESTAÑAS CÓMPUTO ----
+function setTabComputo(tab, btn) {
+  document.querySelectorAll('#pg-computo .mode-toggle .mbtn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('computo-tab-materiales').style.display = tab==='materiales'?'block':'none';
+  document.getElementById('computo-tab-tareas').style.display = tab==='tareas'?'block':'none';
+}
+
 // ---- CÓMPUTO ----
 async function cargarComputo() {
   if(!proyActivo) return;
-  const {data} = await sb.from('proyecto_materiales').select('*').eq('proyecto_id', proyActivo.id).order('material');
-  const cont = document.getElementById('computo-contenido');
-  if(!data || data.length===0) {
-    cont.innerHTML = '<div class="empty"><div class="empty-icon">📋</div><div style="font-weight:600;color:#777;margin-bottom:4px">Sin materiales cargados</div><div style="font-size:13px">Este proyecto no tiene cómputo todavía</div></div>';
-    return;
-  }
-  let html = '<div class="card">';
-  for(const grp of GRUPOS_ORDEN) {
-    const mats = data.filter(m => GRUPOS_MAT[grp] && GRUPOS_MAT[grp].some(g => m.material.startsWith(g)));
-    if(!mats.length) continue;
-    html += `<div class="grp"><div class="grp-label">${grp}</div>`;
-    for(const m of mats) {
-      const acopio = m.cantidad_total - m.cantidad_pedida;
-      const acopioClass = acopio <= 0 ? 'warn' : 'ok';
-      html += `<div class="mat-row">
-        <span>${m.material}</span>
-        <div class="mat-cols">
-          <div class="mc"><div class="mc-lbl">Total</div><div class="mc-val">${fmtVal(m.cantidad_total)} ${m.unidad}</div></div>
-          <div class="mc"><div class="mc-lbl">Pedido</div><div class="mc-val">${fmtVal(m.cantidad_pedida)} ${m.unidad}</div></div>
-          <div class="mc"><div class="mc-lbl">Acopio</div><div class="mc-val ${acopioClass}">${fmtVal(acopio)} ${m.unidad}</div></div>
-        </div>
-      </div>`;
+  // Pestaña materiales
+  const {data: mats} = await sb.from('proyecto_materiales').select('*').eq('proyecto_id', proyActivo.id).order('material');
+  const contMats = document.getElementById('computo-tab-materiales');
+  if(!mats || mats.length===0) {
+    contMats.innerHTML = '<div class="empty"><div class="empty-icon">📋</div><div style="font-weight:600;color:#777;margin-bottom:4px">Sin materiales cargados</div></div>';
+  } else {
+    let html = '<div class="card">';
+    for(const grp of GRUPOS_ORDEN) {
+      const items = mats.filter(m => GRUPOS_MAT[grp] && GRUPOS_MAT[grp].some(g => m.material.startsWith(g)));
+      if(!items.length) continue;
+      html += `<div class="grp"><div class="grp-label">${grp}</div>`;
+      for(const m of items) {
+        const acopio = m.cantidad_total - m.cantidad_pedida;
+        html += `<div class="mat-row"><span>${m.material}</span>
+          <div class="mat-cols">
+            <div class="mc"><div class="mc-lbl">Total</div><div class="mc-val">${fmtVal(m.cantidad_total)} ${m.unidad}</div></div>
+            <div class="mc"><div class="mc-lbl">Pedido</div><div class="mc-val">${fmtVal(m.cantidad_pedida)} ${m.unidad}</div></div>
+            <div class="mc"><div class="mc-lbl">Acopio</div><div class="mc-val ${acopio<=0?'warn':'ok'}">${fmtVal(acopio)} ${m.unidad}</div></div>
+          </div></div>`;
+      }
+      html += '</div>';
     }
     html += '</div>';
+    contMats.innerHTML = html;
   }
-  html += '</div>';
-  cont.innerHTML = html;
+
+  // Pestaña tareas
+  const {data: tareas} = await sb.from('proyecto_tareas').select('*').eq('proyecto_id', proyActivo.id);
+  const contTareas = document.getElementById('computo-tab-tareas');
+  if(!tareas || tareas.length===0) {
+    contTareas.innerHTML = '<div class="empty"><div class="empty-icon">🔨</div><div style="font-weight:600;color:#777;margin-bottom:4px">Sin tareas cargadas</div><div style="font-size:13px">Las tareas se registran al cargar pedidos por m²</div></div>';
+  } else {
+    // Calcular acumulado por tarea desde pedidos
+    const {data: pedTareas} = await sb.from('pedido_tareas').select('*, pedidos!inner(proyecto_id)').eq('pedidos.proyecto_id', proyActivo.id);
+    const acumulados = {};
+    (pedTareas||[]).forEach(t => {
+      if(!acumulados[t.tarea]) acumulados[t.tarea] = 0;
+      acumulados[t.tarea] += t.cantidad;
+    });
+    let html = '<div class="card"><table class="cert-tabla"><thead><tr><th>Tarea</th><th>Total obra</th><th>Ejecutado</th><th>Saldo</th></tr></thead><tbody>';
+    tareas.forEach(t => {
+      const ejec = acumulados[t.tarea] || 0;
+      const saldo = t.cantidad - ejec;
+      html += `<tr><td>${t.tarea}</td><td>${fmtVal(t.cantidad)} ${t.unidad}</td><td>${fmtVal(ejec)} ${t.unidad}</td><td class="${saldo<=0?'num-ok':'num-warn'}">${fmtVal(saldo)} ${t.unidad}</td></tr>`;
+    });
+    html += '</tbody></table></div>';
+    contTareas.innerHTML = html;
+  }
+}
+
+// ---- RESET NUEVO PEDIDO ----
+function resetNuevoPedido() {
+  ['p-brimax','p-cer12','p-comun','p-azotado','p-revgrueso','p-stuko','p-contrapiso','p-pegado',
+   'pm-arena-g','pm-arena-f','pm-cto-port','pm-cto-alb'].forEach(id => {
+    const el = document.getElementById(id);
+    if(el) el.value = '';
+  });
+  // Resetear modo a tareas
+  document.querySelectorAll('#pg-nuevo-pedido .mode-toggle .mbtn').forEach((b,i)=>{
+    b.classList.toggle('active', i===0);
+  });
+  document.getElementById('ped-modo-tareas').style.display = 'block';
+  document.getElementById('ped-modo-mats').style.display = 'none';
+}
+
+// ---- VISTA PREVIA PEDIDO EN LISTA ----
+let pedidoPreviewData = null;
+
+async function verPedido(pedidoId, numero) {
+  const {data: ped} = await sb.from('pedidos').select('*, pedido_materiales(*)').eq('id', pedidoId).single();
+  if(!ped) return;
+  pedidoPreviewData = {...ped, numero};
+  const fecha = ped.fecha ? new Date(ped.fecha+'T12:00:00').toLocaleDateString('es-AR') : hoy();
+  document.getElementById('ped-preview-titulo').textContent = `Pedido #${numero}`;
+  document.getElementById('ped-preview-sub').textContent = fecha + (ped.enviado ? ' · Enviado al corralón' : ' · Pendiente de envío');
+  document.getElementById('btn-toggle-enviado').textContent = ped.enviado ? 'Marcar como no enviado' : 'Marcar como enviado';
+
+  const mats = ped.pedido_materiales || [];
+  let html = '';
+  for(const grp of GRUPOS_ORDEN) {
+    const items = mats.filter(m => GRUPOS_MAT[grp] && GRUPOS_MAT[grp].some(g => m.material.startsWith(g)));
+    if(!items.length) continue;
+    html += `<div class="card"><div class="grp-label">${grp}</div>`;
+    items.forEach(m => {
+      html += `<div class="res-row"><span>${m.material}</span><span class="res-qty">${fmtVal(m.cantidad)} ${m.unidad}</span></div>`;
+    });
+    html += '</div>';
+  }
+  document.getElementById('ped-preview-contenido').innerHTML = html;
+  document.getElementById('pedidos-contenido').style.display = 'none';
+  document.getElementById('pedido-preview').style.display = 'block';
+}
+
+function cerrarPedidoPreview() {
+  document.getElementById('pedidos-contenido').style.display = 'block';
+  document.getElementById('pedido-preview').style.display = 'none';
+  pedidoPreviewData = null;
+}
+
+async function toggleEnviadoPreview() {
+  if(!pedidoPreviewData) return;
+  const nuevo = !pedidoPreviewData.enviado;
+  await sb.from('pedidos').update({enviado: nuevo}).eq('id', pedidoPreviewData.id);
+  pedidoPreviewData.enviado = nuevo;
+  document.getElementById('btn-toggle-enviado').textContent = nuevo ? 'Marcar como no enviado' : 'Marcar como enviado';
+  document.getElementById('ped-preview-sub').textContent = 
+    (pedidoPreviewData.fecha ? new Date(pedidoPreviewData.fecha+'T12:00:00').toLocaleDateString('es-AR') : hoy()) +
+    (nuevo ? ' · Enviado al corralón' : ' · Pendiente de envío');
+  toast(nuevo ? '✓ Marcado como enviado' : 'Marcado como pendiente');
+}
+
+function imprimirPedidoPreview() {
+  if(!pedidoPreviewData) return;
+  abrirPDFPedido(pedidoPreviewData.id, pedidoPreviewData.numero);
+}
+
+function compartirPedido() {
+  const texto = generarTextoPedido();
+  if(navigator.share) {
+    navigator.share({title: 'Pedido de materiales', text: texto});
+  } else if(navigator.clipboard) {
+    navigator.clipboard.writeText(texto);
+    toast('✓ Copiado al portapapeles');
+  }
+}
+
+function generarTextoPedido() {
+  const obra = proyActivo ? proyActivo.nombre + (proyActivo.localidad?' — '+proyActivo.localidad:'') : '';
+  let txt = `PEDIDO DE MATERIALES\n${obra}\nFecha: ${hoy()}\n\n`;
+  const mats = pedidoPreviewData?.pedido_materiales || Object.entries(pedidoTotales).map(([m,{val,u}])=>({material:m,cantidad:val,unidad:u}));
+  mats.forEach(m => { txt += `${m.material}: ${fmtVal(m.cantidad)} ${m.unidad}\n`; });
+  return txt;
+}
+
+// ---- INFORMES ----
+async function buscarInformes() {
+  const proyId = document.getElementById('inf-proyecto').value;
+  const tipo = document.getElementById('inf-tipo').value;
+  const cont = document.getElementById('inf-contenido');
+  const res = document.getElementById('inf-resultados');
+  cont.innerHTML = '<div class="loading">Buscando...</div>';
+  res.style.display = 'block';
+
+  if(tipo === 'pedidos') {
+    let query = sb.from('pedidos').select('*, proyectos(nombre,localidad), pedido_materiales(*)').order('fecha', {ascending:false});
+    if(proyId) query = query.eq('proyecto_id', proyId);
+    const {data} = await query;
+    if(!data || data.length===0) { cont.innerHTML = '<div class="card"><div class="empty">Sin pedidos para los filtros seleccionados</div></div>'; return; }
+    let html = '';
+    data.forEach((p,i) => {
+      const fecha = p.fecha ? new Date(p.fecha+'T12:00:00').toLocaleDateString('es-AR') : '';
+      const obra = p.proyectos ? p.proyectos.nombre + (p.proyectos.localidad?' — '+p.proyectos.localidad:'') : '';
+      const mats = (p.pedido_materiales||[]);
+      let matsHtml = '';
+      for(const grp of GRUPOS_ORDEN) {
+        const items = mats.filter(m => GRUPOS_MAT[grp] && GRUPOS_MAT[grp].some(g => m.material.startsWith(g)));
+        if(!items.length) continue;
+        matsHtml += `<div class="grp-label" style="margin-top:8px">${grp}</div>`;
+        items.forEach(m => { matsHtml += `<div class="res-row"><span>${m.material}</span><span class="res-qty">${fmtVal(m.cantidad)} ${m.unidad}</span></div>`; });
+      }
+      html += `<div class="card"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.75rem">
+        <div><div style="font-weight:600;font-size:14px">Pedido #${data.length-i} — ${obra}</div><div class="psub">${fecha} · ${p.enviado?'Enviado':'Pendiente'}</div></div>
+      </div>${matsHtml}</div>`;
+    });
+    cont.innerHTML = html;
+  } else {
+    cont.innerHTML = '<div class="card"><div class="loading">Este tipo de informe estará disponible próximamente</div></div>';
+  }
+}
+
+function compartirInforme() {
+  if(navigator.clipboard) {
+    navigator.clipboard.writeText(document.getElementById('inf-contenido').innerText);
+    toast('✓ Copiado al portapapeles');
+  }
 }
 
 // ---- PEDIDOS ----
@@ -589,7 +825,7 @@ async function cargarPedidos() {
       <td style="color:#777">${fecha}</td>
       <td style="color:#777">${mats}</td>
       <td style="text-align:center"><div class="chk ${chkClass}" onclick="toggleEnviado('${p.id}', ${p.enviado}, this)"><svg viewBox="0 0 10 10"><polyline points="1.5,5 4,7.5 8.5,2.5"/></svg></div></td>
-      <td style="text-align:right"><button class="btn" style="padding:4px 10px;font-size:11px" onclick="abrirPDFPedido('${p.id}', ${data.length - i})">PDF</button></td>
+      <td style="text-align:right"><button class="btn" style="padding:4px 10px;font-size:11px" onclick="verPedido('${p.id}', ${data.length - i})">Ver →</button></td>
     </tr>`;
   });
   html += '</tbody></table></div>';
