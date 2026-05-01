@@ -9,6 +9,19 @@
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f5f3;color:#1a1a1a;min-height:100vh}
 .app{display:flex;min-height:100vh}
+.auth-wrap{display:flex;align-items:center;justify-content:center;min-height:100vh;background:#f5f5f3}
+.auth-box{background:#fff;border:1px solid #e8e8e4;border-radius:16px;padding:2.5rem;width:380px;max-width:95vw}
+.auth-logo{display:flex;align-items:center;gap:10px;margin-bottom:2rem;justify-content:center}
+.auth-logo-icon{width:36px;height:36px;background:#185FA5;border-radius:8px;display:flex;align-items:center;justify-content:center}
+.auth-logo-icon svg{width:20px;height:20px;fill:none;stroke:#fff;stroke-width:1.8}
+.auth-tab-row{display:flex;border:1px solid #ddd;border-radius:8px;overflow:hidden;margin-bottom:1.5rem}
+.auth-tab{flex:1;padding:8px;font-size:13px;cursor:pointer;color:#777;background:transparent;border:none;font-family:inherit;text-align:center}
+.auth-tab.active{background:#f0f0ec;color:#1a1a1a;font-weight:600}
+.auth-field{margin-bottom:1rem}
+.auth-field label{display:block;font-size:11px;font-weight:600;color:#666;margin-bottom:5px;text-transform:uppercase;letter-spacing:.05em}
+.auth-field input{width:100%;padding:9px 11px;border:1px solid #ddd;border-radius:8px;font-size:14px;background:#fafafa;color:#1a1a1a;font-family:inherit}
+.auth-field input:focus{outline:none;border-color:#185FA5;background:#fff}
+.auth-error{font-size:12px;color:#A32D2D;margin-bottom:1rem;padding:8px 12px;background:#FEE2E2;border-radius:6px;display:none}
 .sidebar{width:220px;background:#fff;border-right:1px solid #e8e8e4;padding:1.25rem 0.875rem;flex-shrink:0;position:fixed;top:0;left:0;bottom:0;overflow-y:auto;z-index:100}
 .main{flex:1;margin-left:220px;padding:2rem;max-width:900px}
 .logo{font-size:14px;font-weight:600;color:#1a1a1a;margin-bottom:1.5rem;padding:0 0.5rem;display:flex;align-items:center;gap:8px}
@@ -20,12 +33,14 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .nav-item.active{background:#EBF3FC;color:#185FA5;font-weight:600}
 .nav-sep{height:1px;background:#f0f0ec;margin:.75rem 0}
 .nav-proj-name{font-size:12px;color:#185FA5;font-weight:600;padding:4px 10px;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nav-user{font-size:11px;color:#999;padding:4px 10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .page{display:none}.page.active{display:block}
 .hdr{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1.5rem}
 .ptitle{font-size:20px;font-weight:600;color:#1a1a1a}
 .psub{font-size:13px;color:#777;margin-top:3px}
 .btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:8px;border:1px solid #ddd;background:#fff;font-size:13px;font-weight:500;cursor:pointer;color:#1a1a1a;transition:all .15s;font-family:inherit}
 .btn:hover{background:#f5f5f3;border-color:#bbb}
+.btn:disabled{opacity:.5;cursor:not-allowed}
 .btnp{background:#185FA5;color:#fff;border-color:#185FA5}
 .btnp:hover{background:#0C447C;border-color:#0C447C}
 .btng{background:#3B6D11;color:#fff;border-color:#3B6D11}
@@ -33,7 +48,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .btnd{background:#A32D2D;color:#fff;border-color:#A32D2D}
 .card{background:#fff;border:1px solid #e8e8e4;border-radius:12px;padding:1.25rem 1.5rem;margin-bottom:1rem}
 .proj-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:12px;margin-bottom:1.5rem}
-.pcard{background:#fff;border:1px solid #e8e8e4;border-radius:12px;padding:1rem 1.25rem;cursor:pointer;transition:all .15s;position:relative}
+.pcard{background:#fff;border:1px solid #e8e8e4;border-radius:12px;padding:1rem 1.25rem;cursor:pointer;transition:all .15s}
 .pcard:hover{border-color:#185FA5;box-shadow:0 2px 8px rgba(24,95,165,.1)}
 .pcard.sel{border:2px solid #185FA5;background:#f6f9fd}
 .pname{font-size:14px;font-weight:600;color:#1a1a1a;margin-bottom:4px}
@@ -44,8 +59,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .badge-gray{background:#f0f0ec;color:#666}
 .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:1rem}
 .form-group label{display:block;font-size:11px;font-weight:600;color:#666;margin-bottom:5px;text-transform:uppercase;letter-spacing:.05em}
-.form-group input,.form-group select{width:100%;padding:8px 10px;border:1px solid #ddd;border-radius:8px;font-size:13px;background:#fafafa;color:#1a1a1a;font-family:inherit;transition:border .15s}
-.form-group input:focus,.form-group select:focus{outline:none;border-color:#185FA5;background:#fff}
+.form-group input,.form-group select,.form-group textarea{width:100%;padding:8px 10px;border:1px solid #ddd;border-radius:8px;font-size:13px;background:#fafafa;color:#1a1a1a;font-family:inherit;transition:border .15s}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{outline:none;border-color:#185FA5;background:#fff}
 .grp-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#999;padding-bottom:8px;border-bottom:1px solid #f0f0ec;margin-bottom:10px}
 .grp{margin-bottom:1.25rem}
 .irow{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid #f5f5f3;font-size:13px}
@@ -59,11 +74,11 @@ input[type=number]:focus{outline:none;border-color:#185FA5;background:#fff}
 .res-qty{font-weight:600;color:#185FA5}
 .mat-row{display:flex;align-items:center;justify-content:space-between;padding:7px 0;font-size:13px;border-bottom:1px solid #f5f5f3}
 .mat-row:last-child{border-bottom:none}
-.mat-cols{display:flex;gap:16px}
-.mc{text-align:right;min-width:70px}
+.mat-cols{display:flex;gap:12px}
+.mc{text-align:right;min-width:65px}
 .mc-lbl{font-size:10px;color:#999;font-weight:600;text-transform:uppercase}
 .mc-val{font-size:13px;font-weight:600;color:#1a1a1a;margin-top:1px}
-.mc-val.ok{color:#3B6D11}.mc-val.warn{color:#BA7517}
+.mc-val.ok{color:#3B6D11}.mc-val.warn{color:#BA7517}.mc-val.desv{color:#A32D2D}
 .pedido-tabla{width:100%;border-collapse:collapse}
 .pedido-tabla th{font-size:10px;font-weight:700;color:#999;text-transform:uppercase;letter-spacing:.06em;padding:6px 8px;text-align:left;border-bottom:1px solid #f0f0ec}
 .pedido-tabla td{padding:9px 8px;font-size:13px;border-bottom:1px solid #f5f5f3;vertical-align:middle}
@@ -75,11 +90,10 @@ input[type=number]:focus{outline:none;border-color:#185FA5;background:#fff}
 .cert-tabla{width:100%;border-collapse:collapse}
 .cert-tabla th{font-size:10px;font-weight:700;color:#999;text-transform:uppercase;letter-spacing:.06em;padding:6px 8px;text-align:right;border-bottom:1px solid #f0f0ec}
 .cert-tabla th:first-child{text-align:left}
-.cert-tabla td{padding:8px 8px;font-size:12px;border-bottom:1px solid #f5f5f3;text-align:right}
+.cert-tabla td{padding:8px;font-size:12px;border-bottom:1px solid #f5f5f3;text-align:right}
 .cert-tabla td:first-child{text-align:left;color:#1a1a1a}
 .cert-tabla tr:last-child td{border-bottom:none}
-.num-ok{color:#3B6D11;font-weight:600}
-.num-warn{color:#BA7517;font-weight:600}
+.num-ok{color:#3B6D11;font-weight:600}.num-warn{color:#BA7517;font-weight:600}.num-red{color:#A32D2D;font-weight:600}
 .step-bar{display:flex;align-items:center;margin-bottom:1.5rem}
 .step{display:flex;align-items:center;gap:6px;font-size:12px;color:#bbb;white-space:nowrap}
 .step.done{color:#3B6D11}.step.cur{color:#185FA5;font-weight:600}
@@ -92,66 +106,69 @@ input[type=number]:focus{outline:none;border-color:#185FA5;background:#fff}
 .mbtn.active{background:#f0f0ec;color:#1a1a1a;font-weight:600}
 .filtros-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px}
 .filtro-label{font-size:11px;font-weight:600;color:#666;margin-bottom:5px;text-transform:uppercase;letter-spacing:.05em}
-.rubros-check{display:flex;gap:12px;align-items:center;flex-wrap:wrap;padding-top:8px;border-top:1px solid #f0f0ec}
-.rubro-check-label{font-size:12px;display:flex;gap:5px;align-items:center;cursor:pointer;color:#555}
-.empty{text-align:center;padding:3rem 1rem;color:#999}
-.empty-icon{font-size:48px;margin-bottom:1rem;opacity:.4}
-.toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);background:#1a1a1a;color:#fff;padding:10px 20px;border-radius:8px;font-size:13px;font-weight:500;z-index:999;display:none;animation:fadein .2s}
-@keyframes fadein{from{opacity:0;transform:translateX(-50%) translateY(10px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
-.loading{text-align:center;padding:2rem;color:#999;font-size:13px}
-
-/* MODAL PDF */
+.etiqueta-badge{display:inline-block;font-size:10px;font-weight:600;padding:2px 8px;border-radius:20px;margin-left:4px}
+.etiq-calculo{background:#FEF3C7;color:#92400E}
+.etiq-proyecto{background:#EDE9FE;color:#5B21B6}
+.etiq-obra{background:#D1FAE5;color:#065F46}
+.etiq-ejecucion{background:#FEE2E2;color:#991B1B}
+.inf-item{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid #f5f5f3;font-size:13px}
+.inf-item:last-child{border-bottom:none}
+.inf-titulo{font-weight:600;color:#1a1a1a}
+.inf-meta{font-size:11px;color:#888;margin-top:2px}
 .pdf-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.5);z-index:200;align-items:center;justify-content:center}
 .pdf-overlay.open{display:flex}
-.pdf-modal{background:#fff;border-radius:12px;width:620px;max-width:95vw;max-height:90vh;overflow-y:auto;padding:0}
-.pdf-toolbar{display:flex;justify-content:space-between;align-items:center;padding:1rem 1.5rem;border-bottom:1px solid #e8e8e4}
-.pdf-toolbar-title{font-size:14px;font-weight:600;color:#1a1a1a}
+.pdf-modal{background:#fff;border-radius:12px;width:640px;max-width:95vw;max-height:90vh;overflow-y:auto}
+.pdf-toolbar{display:flex;justify-content:space-between;align-items:center;padding:1rem 1.5rem;border-bottom:1px solid #e8e8e4;position:sticky;top:0;background:#fff;z-index:1}
 .pdf-body{padding:2rem 2.5rem}
 .pdf-header{margin-bottom:2rem;padding-bottom:1.25rem;border-bottom:2px solid #1a1a1a}
 .pdf-obra{font-size:20px;font-weight:700;color:#1a1a1a;margin-bottom:4px}
-.pdf-meta{font-size:12px;color:#555;display:flex;gap:20px;margin-top:8px}
+.pdf-meta{font-size:12px;color:#555;display:flex;gap:20px;margin-top:8px;flex-wrap:wrap}
 .pdf-meta span{display:flex;flex-direction:column}
 .pdf-meta-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#999;margin-bottom:2px}
 .pdf-meta-val{font-size:13px;font-weight:600;color:#1a1a1a}
 .pdf-section-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#999;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid #f0f0ec}
 .pdf-mat-row{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #f5f5f3;font-size:13px}
 .pdf-mat-row:last-child{border-bottom:none}
-.pdf-mat-nombre{color:#1a1a1a}
 .pdf-mat-qty{font-weight:700;color:#1a1a1a}
 .pdf-footer{margin-top:2rem;padding-top:1rem;border-top:1px solid #e8e8e4;font-size:11px;color:#999;text-align:center}
 .pdf-firma{display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin-top:2rem}
 .pdf-firma-box{border-top:1px solid #1a1a1a;padding-top:6px;font-size:11px;color:#777;text-align:center}
-
-@media print{
-  .sidebar,.pdf-toolbar,button,.toast{display:none!important}
-  .pdf-overlay{display:block!important;position:static!important;background:none!important}
-  .pdf-modal{width:100%!important;max-width:100%!important;border-radius:0!important;box-shadow:none!important;max-height:none!important}
-  .app{display:none!important}
-  body{background:#fff!important}
-}
-
-@media(max-width:700px){
-  .sidebar{width:100%;height:auto;position:relative;border-right:none;border-bottom:1px solid #e8e8e4;padding:.75rem}
-  .app{flex-direction:column}
-  .main{margin-left:0;padding:1rem}
-  .nav-item{display:inline-flex;margin-right:4px;margin-bottom:4px}
-  .sidebar .nav-sec,.sidebar .nav-sep,.sidebar .nav-proj-name{display:none}
-  .form-grid{grid-template-columns:1fr}
-  .filtros-grid{grid-template-columns:1fr}
-  .mat-cols{gap:10px}
-}
+.empty{text-align:center;padding:3rem 1rem;color:#999}
+.empty-icon{font-size:48px;margin-bottom:1rem;opacity:.4}
+.loading{text-align:center;padding:2rem;color:#999;font-size:13px}
+.toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);background:#1a1a1a;color:#fff;padding:10px 20px;border-radius:8px;font-size:13px;font-weight:500;z-index:999;display:none;animation:fadein .2s}
+@keyframes fadein{from{opacity:0;transform:translateX(-50%) translateY(10px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+.acciones-bar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:.875rem 1.25rem}
+.sel-bar{display:flex;align-items:center;gap:12px;padding:.875rem 1.25rem}
+.sel-bar select{flex:1;padding:7px 9px;border:1px solid #ddd;border-radius:8px;background:#fafafa;color:#1a1a1a;font-size:13px;font-family:inherit}
+@media print{.sidebar,.pdf-toolbar,button,.toast,.app,.auth-wrap{display:none!important}.pdf-overlay{display:block!important;position:static!important;background:none!important}.pdf-modal{width:100%!important;max-width:100%!important;border-radius:0!important;max-height:none!important}body{background:#fff!important}}
+@media(max-width:700px){.sidebar{width:100%;height:auto;position:relative;border-right:none;border-bottom:1px solid #e8e8e4;padding:.75rem}.app{flex-direction:column}.main{margin-left:0;padding:1rem}.nav-item{display:inline-flex;margin-right:4px;margin-bottom:4px}.sidebar .nav-sec,.sidebar .nav-sep,.sidebar .nav-proj-name,.sidebar .nav-user{display:none}.form-grid{grid-template-columns:1fr}.filtros-grid{grid-template-columns:1fr}.mat-cols{gap:8px}.mc{min-width:55px}}
 </style>
 </head>
 <body>
-<div class="app">
 
-<div class="sidebar">
-  <div class="logo">
-    <div class="logo-icon">
-      <svg viewBox="0 0 16 16"><rect x="2" y="2" width="5" height="5" rx="1"/><rect x="9" y="2" width="5" height="5" rx="1"/><rect x="2" y="9" width="5" height="5" rx="1"/><rect x="9" y="9" width="5" height="5" rx="1"/></svg>
+<div id="auth-wrap" class="auth-wrap">
+  <div class="auth-box">
+    <div class="auth-logo">
+      <div class="auth-logo-icon"><svg viewBox="0 0 16 16"><rect x="2" y="2" width="5" height="5" rx="1"/><rect x="9" y="2" width="5" height="5" rx="1"/><rect x="2" y="9" width="5" height="5" rx="1"/><rect x="9" y="9" width="5" height="5" rx="1"/></svg></div>
+      <span style="font-size:16px;font-weight:700">Gestor de Materiales</span>
     </div>
-    Gestor de Materiales
+    <div class="auth-tab-row">
+      <button class="auth-tab active" onclick="setAuthTab('login',this)">Ingresar</button>
+      <button class="auth-tab" onclick="setAuthTab('register',this)">Registrarse</button>
+    </div>
+    <div id="auth-error" class="auth-error"></div>
+    <div class="auth-field"><label>Email</label><input type="email" id="auth-email" placeholder="tu@email.com"></div>
+    <div class="auth-field"><label>Contraseña</label><input type="password" id="auth-password" placeholder="Mínimo 6 caracteres"></div>
+    <div class="auth-field" id="auth-confirm-field" style="display:none"><label>Confirmar contraseña</label><input type="password" id="auth-confirm" placeholder="Repetí la contraseña"></div>
+    <button class="btn btnp" id="auth-btn" onclick="authAction()" style="width:100%;justify-content:center;padding:10px">Ingresar</button>
+    <div id="auth-msg" style="font-size:12px;color:#3B6D11;text-align:center;margin-top:.75rem;display:none"></div>
   </div>
+</div>
+
+<div id="app-wrap" class="app" style="display:none">
+<div class="sidebar">
+  <div class="logo"><div class="logo-icon"><svg viewBox="0 0 16 16"><rect x="2" y="2" width="5" height="5" rx="1"/><rect x="9" y="2" width="5" height="5" rx="1"/><rect x="2" y="9" width="5" height="5" rx="1"/><rect x="9" y="9" width="5" height="5" rx="1"/></svg></div>Gestor</div>
   <div class="nav-sec">General</div>
   <div class="nav-item active" onclick="nav('inicio')">Proyectos</div>
   <div class="nav-item" onclick="nav('informes')">Informes</div>
@@ -161,181 +178,102 @@ input[type=number]:focus{outline:none;border-color:#185FA5;background:#fff}
   <div class="nav-item" onclick="nav('computo')">Cómputo general</div>
   <div class="nav-item" onclick="nav('pedidos')">Pedidos</div>
   <div class="nav-item" onclick="nav('nuevo-pedido')">Nuevo pedido</div>
+  <div class="nav-sep"></div>
+  <div class="nav-user" id="nav-user-email"></div>
+  <div class="nav-item" style="color:#A32D2D" onclick="cerrarSesion()">Cerrar sesión</div>
 </div>
 
 <div class="main">
 
-<!-- INICIO -->
 <div id="pg-inicio" class="page active">
-  <div class="hdr">
-    <div><div class="ptitle">Proyectos</div><div class="psub">Seleccioná un proyecto o creá uno nuevo</div></div>
-    <button class="btn btnp" onclick="nav('nuevo-proyecto')">+ Nuevo proyecto</button>
-  </div>
-  <div class="proj-grid" id="lista-proyectos">
-    <div class="loading">Cargando proyectos...</div>
-  </div>
+  <div class="hdr"><div><div class="ptitle">Proyectos</div><div class="psub">Seleccioná un proyecto o creá uno nuevo</div></div><button class="btn btnp" onclick="nav('nuevo-proyecto')">+ Nuevo proyecto</button></div>
+  <div class="proj-grid" id="lista-proyectos"><div class="loading">Cargando...</div></div>
 </div>
 
-<!-- NUEVO PROYECTO paso 1 -->
 <div id="pg-nuevo-proyecto" class="page">
-  <div class="step-bar">
-    <div class="step cur"><div class="step-dot">1</div>Datos</div>
-    <div class="step-line"></div>
-    <div class="step"><div class="step-dot">2</div>Carga</div>
-    <div class="step-line"></div>
-    <div class="step"><div class="step-dot">3</div>Cómputo</div>
-  </div>
-  <div class="hdr"><div><div class="ptitle">Nuevo proyecto</div><div class="psub">Ingresá los datos básicos de la obra</div></div></div>
+  <div class="step-bar"><div class="step cur"><div class="step-dot">1</div>Datos</div><div class="step-line"></div><div class="step"><div class="step-dot">2</div>Carga</div><div class="step-line"></div><div class="step"><div class="step-dot">3</div>Cómputo</div></div>
+  <div class="hdr"><div><div class="ptitle">Nuevo proyecto</div></div></div>
   <div class="card">
     <div class="form-grid">
       <div class="form-group"><label>Nombre de la obra</label><input type="text" id="np-nombre" placeholder="Ej: Casa García"></div>
       <div class="form-group"><label>Localidad</label><input type="text" id="np-localidad" placeholder="Ej: Totoras"></div>
       <div class="form-group"><label>Fecha de inicio</label><input type="date" id="np-fecha"></div>
-      <div class="form-group"><label>Estado</label>
-        <select id="np-estado">
-          <option value="en-curso">En curso</option>
-          <option value="presupuesto">Presupuesto</option>
-          <option value="finalizado">Finalizado</option>
-        </select>
-      </div>
+      <div class="form-group"><label>Estado</label><select id="np-estado"><option value="en-curso">En curso</option><option value="presupuesto">Presupuesto</option><option value="finalizado">Finalizado</option></select></div>
     </div>
-    <div style="display:flex;gap:8px">
-      <button class="btn btnp" onclick="irPaso2()">Continuar →</button>
-      <button class="btn" onclick="nav('inicio')">Cancelar</button>
-    </div>
+    <div style="display:flex;gap:8px"><button class="btn btnp" onclick="irPaso2()">Continuar →</button><button class="btn" onclick="nav('inicio')">Cancelar</button></div>
   </div>
 </div>
 
-<!-- NUEVO PROYECTO paso 2 -->
 <div id="pg-np-paso2" class="page">
-  <div class="step-bar">
-    <div class="step done"><div class="step-dot">✓</div>Datos</div>
-    <div class="step-line"></div>
-    <div class="step cur"><div class="step-dot">2</div>Carga</div>
-    <div class="step-line"></div>
-    <div class="step"><div class="step-dot">3</div>Cómputo</div>
-  </div>
-  <div class="hdr"><div><div class="ptitle" id="np2-titulo"></div><div class="psub" id="np2-sub"></div></div></div>
-  <div class="mode-toggle">
-    <div class="mbtn active" onclick="setModoNP('tareas',this)">Por tareas (m²)</div>
-    <div class="mbtn" onclick="setModoNP('mats',this)">Por materiales</div>
-  </div>
+  <div class="step-bar"><div class="step done"><div class="step-dot">✓</div>Datos</div><div class="step-line"></div><div class="step cur"><div class="step-dot">2</div>Carga</div><div class="step-line"></div><div class="step"><div class="step-dot">3</div>Cómputo</div></div>
+  <div class="hdr"><div><div class="ptitle" id="np2-titulo"></div><div class="psub">Cantidades totales de la obra</div></div></div>
+  <div class="mode-toggle"><div class="mbtn active" onclick="setModoNP('tareas',this)">Por tareas (m²)</div><div class="mbtn" onclick="setModoNP('mats',this)">Por materiales</div></div>
   <div id="np-modo-tareas">
-    <div class="card">
-      <div class="grp"><div class="grp-label">Mampostería</div>
-        <div class="irow"><span class="ilabel">Muro ladrillo Brimax 12.5 cm</span><input type="number" id="np-brimax" placeholder="0" min="0"><span class="iunit">m²</span></div>
-        <div class="irow"><span class="ilabel">Muro ladrillo cerámico portante 12</span><input type="number" id="np-cer12" placeholder="0" min="0"><span class="iunit">m²</span></div>
-        <div class="irow"><span class="ilabel">Muro ladrillo cerámico portante 18</span><input type="number" id="np-cer18" placeholder="0" min="0"><span class="iunit">m²</span></div>
-        <div class="irow"><span class="ilabel">Muro ladrillo común 15 cm</span><input type="number" id="np-comun" placeholder="0" min="0"><span class="iunit">m²</span></div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="grp"><div class="grp-label">Revoques</div>
-        <div class="irow"><span class="ilabel">Azotado hidrófugo</span><input type="number" id="np-azotado" placeholder="0" min="0"><span class="iunit">m²</span></div>
-        <div class="irow"><span class="ilabel">Revoque grueso (cto. albañilería)</span><input type="number" id="np-revgrueso" placeholder="0" min="0"><span class="iunit">m²</span></div>
-        <div class="irow"><span class="ilabel">Stuko interior</span><input type="number" id="np-stuko-int" placeholder="0" min="0"><span class="iunit">m²</span></div>
-        <div class="irow"><span class="ilabel">Stuko exterior</span><input type="number" id="np-stuko-ext" placeholder="0" min="0"><span class="iunit">m²</span></div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="grp"><div class="grp-label">Pisos y contrapisos</div>
-        <div class="irow"><span class="ilabel">Contrapiso H15</span><input type="number" id="np-contrapiso" placeholder="0" min="0"><span class="iunit">m²</span></div>
-        <div class="irow"><span class="ilabel">Pegado de cerámicos (Klaukol)</span><input type="number" id="np-ceramicos" placeholder="0" min="0"><span class="iunit">m²</span></div>
-      </div>
-    </div>
+    <div class="card"><div class="grp"><div class="grp-label">Mampostería</div>
+      <div class="irow"><span class="ilabel">Muro ladrillo Brimax 12.5 cm</span><input type="number" id="np-brimax" placeholder="0" min="0"><span class="iunit">m²</span></div>
+      <div class="irow"><span class="ilabel">Muro ladrillo cerámico portante 12</span><input type="number" id="np-cer12" placeholder="0" min="0"><span class="iunit">m²</span></div>
+      <div class="irow"><span class="ilabel">Muro ladrillo cerámico portante 18</span><input type="number" id="np-cer18" placeholder="0" min="0"><span class="iunit">m²</span></div>
+      <div class="irow"><span class="ilabel">Muro ladrillo común 15 cm</span><input type="number" id="np-comun" placeholder="0" min="0"><span class="iunit">m²</span></div>
+    </div></div>
+    <div class="card"><div class="grp"><div class="grp-label">Revoques</div>
+      <div class="irow"><span class="ilabel">Azotado hidrófugo</span><input type="number" id="np-azotado" placeholder="0" min="0"><span class="iunit">m²</span></div>
+      <div class="irow"><span class="ilabel">Revoque grueso</span><input type="number" id="np-revgrueso" placeholder="0" min="0"><span class="iunit">m²</span></div>
+      <div class="irow"><span class="ilabel">Stuko interior</span><input type="number" id="np-stuko-int" placeholder="0" min="0"><span class="iunit">m²</span></div>
+      <div class="irow"><span class="ilabel">Stuko exterior</span><input type="number" id="np-stuko-ext" placeholder="0" min="0"><span class="iunit">m²</span></div>
+    </div></div>
+    <div class="card"><div class="grp"><div class="grp-label">Pisos y contrapisos</div>
+      <div class="irow"><span class="ilabel">Contrapiso H15</span><input type="number" id="np-contrapiso" placeholder="0" min="0"><span class="iunit">m²</span></div>
+      <div class="irow"><span class="ilabel">Pegado de cerámicos (Klaukol)</span><input type="number" id="np-ceramicos" placeholder="0" min="0"><span class="iunit">m²</span></div>
+    </div></div>
   </div>
   <div id="np-modo-mats" style="display:none">
-    <div class="card">
-      <div class="grp"><div class="grp-label">Áridos</div>
-        <div class="irow"><span class="ilabel">Arena gruesa</span><input type="number" id="npm-arena-g" placeholder="0" min="0"><span class="iunit">m³</span></div>
-        <div class="irow"><span class="ilabel">Arena fina</span><input type="number" id="npm-arena-f" placeholder="0" min="0"><span class="iunit">m³</span></div>
-        <div class="irow"><span class="ilabel">Piedra partida</span><input type="number" id="npm-piedra" placeholder="0" min="0"><span class="iunit">m³</span></div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="grp"><div class="grp-label">Aglomerantes</div>
-        <div class="irow"><span class="ilabel">Cemento Portland</span><input type="number" id="npm-cto-port" placeholder="0" min="0"><span class="iunit">kg</span></div>
-        <div class="irow"><span class="ilabel">Cemento albañilería</span><input type="number" id="npm-cto-alb" placeholder="0" min="0"><span class="iunit">kg</span></div>
-        <div class="irow"><span class="ilabel">Cal hidratada</span><input type="number" id="npm-cal" placeholder="0" min="0"><span class="iunit">kg</span></div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="grp"><div class="grp-label">Mampostería</div>
-        <div class="irow"><span class="ilabel">Ladrillo Brimax 12.5 (u)</span><input type="number" id="npm-brimax-u" placeholder="0" min="0"><span class="iunit">u</span></div>
-        <div class="irow"><span class="ilabel">Ladrillo cerámico portante (u)</span><input type="number" id="npm-cer-u" placeholder="0" min="0"><span class="iunit">u</span></div>
-        <div class="irow"><span class="ilabel">Ladrillo común (u)</span><input type="number" id="npm-comun-u" placeholder="0" min="0"><span class="iunit">u</span></div>
-        <div class="irow"><span class="ilabel">Adhesivo cementicio (kg)</span><input type="number" id="npm-adhesivo" placeholder="0" min="0"><span class="iunit">kg</span></div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="grp"><div class="grp-label">Premezclas e impermeabilizantes</div>
-        <div class="irow"><span class="ilabel">Stuko interior (bolsas 25 kg)</span><input type="number" id="npm-stuko-i" placeholder="0" min="0"><span class="iunit">bol</span></div>
-        <div class="irow"><span class="ilabel">Stuko exterior (bolsas 25 kg)</span><input type="number" id="npm-stuko-e" placeholder="0" min="0"><span class="iunit">bol</span></div>
-        <div class="irow"><span class="ilabel">Hidrófugo líquido (L)</span><input type="number" id="npm-hidro" placeholder="0" min="0"><span class="iunit">L</span></div>
-        <div class="irow"><span class="ilabel">Adhesivo Klaukol (kg)</span><input type="number" id="npm-klaukol" placeholder="0" min="0"><span class="iunit">kg</span></div>
-      </div>
-    </div>
+    <div class="card"><div class="grp"><div class="grp-label">Áridos</div>
+      <div class="irow"><span class="ilabel">Arena gruesa</span><input type="number" id="npm-arena-g" placeholder="0" min="0"><span class="iunit">m³</span></div>
+      <div class="irow"><span class="ilabel">Arena fina</span><input type="number" id="npm-arena-f" placeholder="0" min="0"><span class="iunit">m³</span></div>
+      <div class="irow"><span class="ilabel">Piedra partida</span><input type="number" id="npm-piedra" placeholder="0" min="0"><span class="iunit">m³</span></div>
+    </div></div>
+    <div class="card"><div class="grp"><div class="grp-label">Aglomerantes</div>
+      <div class="irow"><span class="ilabel">Cemento Portland</span><input type="number" id="npm-cto-port" placeholder="0" min="0"><span class="iunit">kg</span></div>
+      <div class="irow"><span class="ilabel">Cemento albañilería</span><input type="number" id="npm-cto-alb" placeholder="0" min="0"><span class="iunit">kg</span></div>
+      <div class="irow"><span class="ilabel">Cal hidratada</span><input type="number" id="npm-cal" placeholder="0" min="0"><span class="iunit">kg</span></div>
+    </div></div>
+    <div class="card"><div class="grp"><div class="grp-label">Mampostería</div>
+      <div class="irow"><span class="ilabel">Ladrillo Brimax 12.5 (u)</span><input type="number" id="npm-brimax-u" placeholder="0" min="0"><span class="iunit">u</span></div>
+      <div class="irow"><span class="ilabel">Ladrillo cerámico portante (u)</span><input type="number" id="npm-cer-u" placeholder="0" min="0"><span class="iunit">u</span></div>
+      <div class="irow"><span class="ilabel">Ladrillo común (u)</span><input type="number" id="npm-comun-u" placeholder="0" min="0"><span class="iunit">u</span></div>
+      <div class="irow"><span class="ilabel">Adhesivo cementicio (kg)</span><input type="number" id="npm-adhesivo" placeholder="0" min="0"><span class="iunit">kg</span></div>
+    </div></div>
+    <div class="card"><div class="grp"><div class="grp-label">Premezclas e impermeabilizantes</div>
+      <div class="irow"><span class="ilabel">Stuko interior (bol 25 kg)</span><input type="number" id="npm-stuko-i" placeholder="0" min="0"><span class="iunit">bol</span></div>
+      <div class="irow"><span class="ilabel">Stuko exterior (bol 25 kg)</span><input type="number" id="npm-stuko-e" placeholder="0" min="0"><span class="iunit">bol</span></div>
+      <div class="irow"><span class="ilabel">Hidrófugo líquido (L)</span><input type="number" id="npm-hidro" placeholder="0" min="0"><span class="iunit">L</span></div>
+      <div class="irow"><span class="ilabel">Adhesivo Klaukol (kg)</span><input type="number" id="npm-klaukol" placeholder="0" min="0"><span class="iunit">kg</span></div>
+    </div></div>
   </div>
-  <div style="display:flex;gap:8px;margin-top:.25rem">
-    <button class="btn btnp" onclick="calcularNuevoProyecto()">Calcular cómputo total →</button>
-    <button class="btn" onclick="nav('nuevo-proyecto')">← Volver</button>
-  </div>
+  <div style="display:flex;gap:8px;margin-top:.25rem"><button class="btn btnp" onclick="calcularNuevoProyecto()">Calcular cómputo →</button><button class="btn" onclick="nav('nuevo-proyecto')">← Volver</button></div>
 </div>
 
-<!-- NUEVO PROYECTO paso 3 -->
 <div id="pg-np-paso3" class="page">
-  <div class="step-bar">
-    <div class="step done"><div class="step-dot">✓</div>Datos</div>
-    <div class="step-line"></div>
-    <div class="step done"><div class="step-dot">✓</div>Carga</div>
-    <div class="step-line"></div>
-    <div class="step cur"><div class="step-dot">3</div>Cómputo</div>
-  </div>
-  <div class="hdr">
-    <div><div class="ptitle" id="np3-titulo"></div><div class="psub" id="np3-sub"></div></div>
-    <div style="display:flex;gap:8px">
-      <button class="btn btng" id="btn-guardar-proyecto" onclick="guardarProyecto()">Guardar proyecto ✓</button>
-      <button class="btn" onclick="window.print()">Exportar PDF</button>
-    </div>
-  </div>
+  <div class="step-bar"><div class="step done"><div class="step-dot">✓</div>Datos</div><div class="step-line"></div><div class="step done"><div class="step-dot">✓</div>Carga</div><div class="step-line"></div><div class="step cur"><div class="step-dot">3</div>Cómputo</div></div>
+  <div class="hdr"><div><div class="ptitle" id="np3-titulo"></div><div class="psub">Cómputo total de la obra</div></div><div style="display:flex;gap:8px"><button class="btn btng" id="btn-guardar-proyecto" onclick="guardarProyecto()">Guardar proyecto ✓</button><button class="btn" onclick="window.print()">PDF</button></div></div>
   <div id="np3-resultado"></div>
 </div>
 
-<!-- CÓMPUTO GENERAL -->
 <div id="pg-computo" class="page">
-  <div class="hdr">
-    <div><div class="ptitle">Cómputo general</div><div class="psub" id="computo-sub"></div></div>
-    <button class="btn btnd" onclick="confirmarEliminar()">Eliminar proyecto</button>
-  </div>
-  <div class="mode-toggle" style="margin-bottom:1rem">
-    <div class="mbtn active" onclick="setTabComputo('materiales',this)">Materiales</div>
-    <div class="mbtn" onclick="setTabComputo('tareas',this)">Tareas</div>
-  </div>
+  <div class="hdr"><div><div class="ptitle">Cómputo general</div><div class="psub" id="computo-sub"></div></div><button class="btn btnd" onclick="confirmarEliminar()">Eliminar proyecto</button></div>
+  <div class="mode-toggle"><div class="mbtn active" onclick="setTabComputo('materiales',this)">Materiales</div><div class="mbtn" onclick="setTabComputo('tareas',this)">Tareas</div></div>
   <div id="computo-tab-materiales"><div class="loading">Cargando...</div></div>
   <div id="computo-tab-tareas" style="display:none"><div class="loading">Cargando...</div></div>
 </div>
 
-<!-- PEDIDOS -->
 <div id="pg-pedidos" class="page">
-  <div class="hdr">
-    <div><div class="ptitle">Pedidos</div><div class="psub" id="pedidos-sub"></div></div>
-    <button class="btn btnp" onclick="nav('nuevo-pedido')">+ Nuevo pedido</button>
-  </div>
-  <div class="card" style="display:flex;align-items:center;gap:12px;padding:.875rem 1.25rem">
-    <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#999;white-space:nowrap">Proyecto</div>
-    <select id="ped-proyecto-sel" style="flex:1;padding:7px 9px;border:1px solid #ddd;border-radius:8px;background:#fafafa;color:#1a1a1a;font-size:13px;font-family:inherit" onchange="cambiarProyectoPedidos()">
-      <option value="">— Seleccioná un proyecto —</option>
-    </select>
-  </div>
-  <div id="pedidos-contenido"><div class="loading">Seleccioná un proyecto para ver sus pedidos</div></div>
-  <!-- Vista previa pedido seleccionado -->
+  <div class="hdr"><div><div class="ptitle">Pedidos</div><div class="psub" id="pedidos-sub"></div></div><button class="btn btnp" onclick="nav('nuevo-pedido')">+ Nuevo pedido</button></div>
+  <div class="card sel-bar"><div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#999;white-space:nowrap">Proyecto</div><select id="ped-proyecto-sel" onchange="cambiarProyectoPedidos()"><option value="">— Seleccioná un proyecto —</option></select></div>
+  <div id="pedidos-lista"><div class="loading">Seleccioná un proyecto</div></div>
   <div id="pedido-preview" style="display:none">
-    <div class="hdr" style="margin-top:1rem;margin-bottom:.75rem">
-      <div><div style="font-size:15px;font-weight:600" id="ped-preview-titulo"></div><div class="psub" id="ped-preview-sub"></div></div>
-      <button class="btn" onclick="cerrarPedidoPreview()">← Volver a lista</button>
-    </div>
+    <div class="hdr" style="margin-top:1rem;margin-bottom:.75rem"><div><div style="font-size:15px;font-weight:600" id="ped-preview-titulo"></div><div class="psub" id="ped-preview-sub"></div></div><button class="btn" onclick="cerrarPedidoPreview()">← Volver</button></div>
     <div id="ped-preview-contenido"></div>
-    <div class="card" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:.875rem 1.25rem;margin-top:.5rem">
+    <div class="card acciones-bar">
       <span style="font-size:12px;font-weight:600;color:#777">Acciones:</span>
       <button class="btn btnp" onclick="imprimirPedidoPreview()">Imprimir / PDF</button>
       <button class="btn" onclick="compartirPedido()">Compartir</button>
@@ -344,72 +282,58 @@ input[type=number]:focus{outline:none;border-color:#185FA5;background:#fff}
   </div>
 </div>
 
-<!-- NUEVO PEDIDO -->
 <div id="pg-nuevo-pedido" class="page">
   <div class="hdr"><div><div class="ptitle">Nuevo pedido</div><div class="psub" id="pedido-sub"></div></div></div>
-  <div class="card" style="display:flex;align-items:center;gap:12px;padding:.875rem 1.25rem;margin-bottom:1rem">
-    <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#999;white-space:nowrap">Proyecto</div>
-    <select id="np-proyecto-sel" style="flex:1;padding:7px 9px;border:1px solid #ddd;border-radius:8px;background:#fafafa;color:#1a1a1a;font-size:13px;font-family:inherit" onchange="cambiarProyectoNuevoPedido()">
-      <option value="">— Seleccioná un proyecto —</option>
-    </select>
-  </div>
-  <div class="mode-toggle">
-    <div class="mbtn active" onclick="setModoPedido('tareas',this)">Por tareas (m²)</div>
-    <div class="mbtn" onclick="setModoPedido('mats',this)">Por materiales</div>
-  </div>
+  <div class="card sel-bar"><div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#999;white-space:nowrap">Proyecto</div><select id="np-proyecto-sel" onchange="cambiarProyectoNuevoPedido()"><option value="">— Seleccioná un proyecto —</option></select></div>
+  <div class="mode-toggle"><div class="mbtn active" onclick="setModoPedido('tareas',this)">Por tareas (m²)</div><div class="mbtn" onclick="setModoPedido('mats',this)">Por materiales directos</div></div>
   <div id="ped-modo-tareas">
-    <div class="card">
-      <div class="grp"><div class="grp-label">Mampostería</div>
-        <div class="irow"><span class="ilabel">Muro ladrillo Brimax 12.5 cm</span><input type="number" id="p-brimax" placeholder="0" min="0" value=""><span class="iunit">m²</span></div>
-        <div class="irow"><span class="ilabel">Muro cerámico portante 12</span><input type="number" id="p-cer12" placeholder="0" min="0" value=""><span class="iunit">m²</span></div>
-        <div class="irow"><span class="ilabel">Muro ladrillo común 15 cm</span><input type="number" id="p-comun" placeholder="0" min="0" value=""><span class="iunit">m²</span></div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="grp"><div class="grp-label">Revoques</div>
-        <div class="irow"><span class="ilabel">Azotado hidrófugo</span><input type="number" id="p-azotado" placeholder="0" min="0" value=""><span class="iunit">m²</span></div>
-        <div class="irow"><span class="ilabel">Revoque grueso</span><input type="number" id="p-revgrueso" placeholder="0" min="0" value=""><span class="iunit">m²</span></div>
-        <div class="irow"><span class="ilabel">Stuko interior</span><input type="number" id="p-stuko" placeholder="0" min="0" value=""><span class="iunit">m²</span></div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="grp"><div class="grp-label">Pisos</div>
-        <div class="irow"><span class="ilabel">Contrapiso H15</span><input type="number" id="p-contrapiso" placeholder="0" min="0" value=""><span class="iunit">m²</span></div>
-        <div class="irow"><span class="ilabel">Pegado cerámicos (Klaukol)</span><input type="number" id="p-pegado" placeholder="0" min="0" value=""><span class="iunit">m²</span></div>
-      </div>
-    </div>
-    <div style="display:flex;gap:8px">
-      <button class="btn btnp" onclick="calcularPedido()">Calcular materiales →</button>
-      <button class="btn" onclick="nav('pedidos')">Cancelar</button>
-    </div>
+    <div class="card"><div class="grp"><div class="grp-label">Mampostería</div>
+      <div class="irow"><span class="ilabel">Muro ladrillo Brimax 12.5 cm</span><input type="number" id="p-brimax" placeholder="0" min="0"><span class="iunit">m²</span></div>
+      <div class="irow"><span class="ilabel">Muro cerámico portante 12</span><input type="number" id="p-cer12" placeholder="0" min="0"><span class="iunit">m²</span></div>
+      <div class="irow"><span class="ilabel">Muro ladrillo común 15 cm</span><input type="number" id="p-comun" placeholder="0" min="0"><span class="iunit">m²</span></div>
+    </div></div>
+    <div class="card"><div class="grp"><div class="grp-label">Revoques</div>
+      <div class="irow"><span class="ilabel">Azotado hidrófugo</span><input type="number" id="p-azotado" placeholder="0" min="0"><span class="iunit">m²</span></div>
+      <div class="irow"><span class="ilabel">Revoque grueso</span><input type="number" id="p-revgrueso" placeholder="0" min="0"><span class="iunit">m²</span></div>
+      <div class="irow"><span class="ilabel">Stuko interior</span><input type="number" id="p-stuko" placeholder="0" min="0"><span class="iunit">m²</span></div>
+    </div></div>
+    <div class="card"><div class="grp"><div class="grp-label">Pisos</div>
+      <div class="irow"><span class="ilabel">Contrapiso H15</span><input type="number" id="p-contrapiso" placeholder="0" min="0"><span class="iunit">m²</span></div>
+      <div class="irow"><span class="ilabel">Pegado cerámicos (Klaukol)</span><input type="number" id="p-pegado" placeholder="0" min="0"><span class="iunit">m²</span></div>
+    </div></div>
+    <div style="display:flex;gap:8px"><button class="btn btnp" onclick="calcularPedido()">Calcular materiales →</button><button class="btn" onclick="nav('pedidos')">Cancelar</button></div>
   </div>
   <div id="ped-modo-mats" style="display:none">
+    <div class="card"><div class="grp"><div class="grp-label">Áridos</div>
+      <div class="irow"><span class="ilabel">Arena gruesa</span><input type="number" id="pm-arena-g" placeholder="0" min="0"><span class="iunit">m³</span></div>
+      <div class="irow"><span class="ilabel">Arena fina</span><input type="number" id="pm-arena-f" placeholder="0" min="0"><span class="iunit">m³</span></div>
+    </div></div>
+    <div class="card"><div class="grp"><div class="grp-label">Aglomerantes</div>
+      <div class="irow"><span class="ilabel">Cemento Portland</span><input type="number" id="pm-cto-port" placeholder="0" min="0"><span class="iunit">kg</span></div>
+      <div class="irow"><span class="ilabel">Cemento albañilería</span><input type="number" id="pm-cto-alb" placeholder="0" min="0"><span class="iunit">kg</span></div>
+      <div class="irow"><span class="ilabel">Cal hidratada</span><input type="number" id="pm-cal" placeholder="0" min="0"><span class="iunit">kg</span></div>
+    </div></div>
+    <div class="card"><div class="grp"><div class="grp-label">Mampostería</div>
+      <div class="irow"><span class="ilabel">Ladrillo Brimax 12.5 (u)</span><input type="number" id="pm-brimax-u" placeholder="0" min="0"><span class="iunit">u</span></div>
+      <div class="irow"><span class="ilabel">Ladrillo común (u)</span><input type="number" id="pm-comun-u" placeholder="0" min="0"><span class="iunit">u</span></div>
+      <div class="irow"><span class="ilabel">Adhesivo cementicio (kg)</span><input type="number" id="pm-adhesivo" placeholder="0" min="0"><span class="iunit">kg</span></div>
+    </div></div>
     <div class="card">
-      <div class="grp"><div class="grp-label">Áridos</div>
-        <div class="irow"><span class="ilabel">Arena gruesa</span><input type="number" id="pm-arena-g" placeholder="0" min="0" value=""><span class="iunit">m³</span></div>
-        <div class="irow"><span class="ilabel">Arena fina</span><input type="number" id="pm-arena-f" placeholder="0" min="0" value=""><span class="iunit">m³</span></div>
+      <div class="grp-label" style="margin-bottom:12px">Clasificación del pedido (opcional)</div>
+      <div class="form-grid">
+        <div class="form-group"><label>Vincular a tarea</label><select id="pm-rubro-vinculado"><option value="">— Sin vinculación —</option></select></div>
+        <div class="form-group"><label>Motivo del pedido</label><select id="pm-etiqueta"><option value="">— Sin clasificar —</option><option value="error-calculo">Error de cálculo</option><option value="error-proyecto">Error de proyecto</option><option value="modificacion-obra">Modificación en obra</option><option value="error-ejecucion">Error de ejecución</option></select></div>
       </div>
+      <div class="form-group"><label>Comentario</label><textarea id="pm-comentario" rows="2" placeholder="Descripción breve del motivo (opcional)" style="resize:vertical"></textarea></div>
     </div>
-    <div class="card">
-      <div class="grp"><div class="grp-label">Aglomerantes</div>
-        <div class="irow"><span class="ilabel">Cemento Portland</span><input type="number" id="pm-cto-port" placeholder="0" min="0" value=""><span class="iunit">kg</span></div>
-        <div class="irow"><span class="ilabel">Cemento albañilería</span><input type="number" id="pm-cto-alb" placeholder="0" min="0" value=""><span class="iunit">kg</span></div>
-      </div>
-    </div>
-    <div style="display:flex;gap:8px">
-      <button class="btn btnp" onclick="guardarPedidoDirecto()">Confirmar pedido →</button>
-      <button class="btn" onclick="nav('pedidos')">Cancelar</button>
-    </div>
+    <div style="display:flex;gap:8px"><button class="btn btnp" onclick="confirmarPedidoDirecto()">Ver resumen →</button><button class="btn" onclick="nav('pedidos')">Cancelar</button></div>
   </div>
 </div>
 
-<!-- RESULTADO PEDIDO -->
 <div id="pg-pedido-resultado" class="page">
-  <div class="hdr">
-    <div><div class="ptitle">Lista de materiales</div><div class="psub" id="ped-res-sub"></div></div>
-  </div>
+  <div class="hdr"><div><div class="ptitle">Lista de materiales</div><div class="psub" id="ped-res-sub"></div></div></div>
   <div id="ped-res-contenido"></div>
-  <div class="card" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:.875rem 1.25rem;margin-top:.5rem">
+  <div class="card acciones-bar">
     <span style="font-size:12px;font-weight:600;color:#777">Acciones:</span>
     <button class="btn btng" onclick="guardarPedido()">Guardar pedido ✓</button>
     <button class="btn btnp" onclick="abrirPDFPedidoActual()">Imprimir / PDF</button>
@@ -418,726 +342,405 @@ input[type=number]:focus{outline:none;border-color:#185FA5;background:#fff}
   </div>
 </div>
 
-<!-- INFORMES -->
 <div id="pg-informes" class="page">
-  <div class="hdr"><div><div class="ptitle">Informes</div><div class="psub">Seleccioná los filtros y buscá</div></div></div>
+  <div class="hdr"><div><div class="ptitle">Informes</div><div class="psub">Historial y generador de informes</div></div></div>
+  <div class="card" style="margin-bottom:1rem">
+    <div style="font-size:13px;font-weight:600;margin-bottom:.75rem">Últimos 10 informes</div>
+    <div id="inf-historial"><div class="loading">Cargando...</div></div>
+  </div>
   <div class="card">
+    <div style="font-size:13px;font-weight:600;margin-bottom:.875rem">Generar informe</div>
     <div class="filtros-grid">
-      <div><div class="filtro-label">Proyecto</div>
-        <select id="inf-proyecto" style="width:100%;padding:7px 9px;border:1px solid #ddd;border-radius:8px;background:#fafafa;color:#1a1a1a;font-size:13px;font-family:inherit">
-          <option value="">— Todos los proyectos —</option>
-        </select>
-      </div>
-      <div><div class="filtro-label">Período</div>
-        <select id="inf-periodo" style="width:100%;padding:7px 9px;border:1px solid #ddd;border-radius:8px;background:#fafafa;color:#1a1a1a;font-size:13px;font-family:inherit">
-          <option value="mes">Mes actual</option>
-          <option value="semana">Semana actual</option>
-          <option value="quincena">Quincena actual</option>
-          <option value="todo">Todo</option>
-        </select>
-      </div>
-      <div><div class="filtro-label">Tipo</div>
-        <select id="inf-tipo" style="width:100%;padding:7px 9px;border:1px solid #ddd;border-radius:8px;background:#fafafa;color:#1a1a1a;font-size:13px;font-family:inherit">
-          <option value="pedidos">Pedidos de materiales</option>
-          <option value="certificado">Certificado de avance</option>
-          <option value="tareas">Tareas ejecutadas</option>
-        </select>
-      </div>
+      <div><div class="filtro-label">Proyecto</div><select id="inf-proyecto" style="width:100%;padding:7px 9px;border:1px solid #ddd;border-radius:8px;background:#fafafa;color:#1a1a1a;font-size:13px;font-family:inherit"><option value="">— Todos los proyectos —</option></select></div>
+      <div><div class="filtro-label">Período</div><select id="inf-periodo" style="width:100%;padding:7px 9px;border:1px solid #ddd;border-radius:8px;background:#fafafa;color:#1a1a1a;font-size:13px;font-family:inherit"><option value="mes">Mes actual</option><option value="semana">Semana actual</option><option value="quincena">Quincena actual</option><option value="todo">Todo</option></select></div>
+      <div><div class="filtro-label">Tipo de informe</div><select id="inf-tipo" style="width:100%;padding:7px 9px;border:1px solid #ddd;border-radius:8px;background:#fafafa;color:#1a1a1a;font-size:13px;font-family:inherit"><option value="pedidos">Pedidos de materiales</option><option value="certificado">Certificado de avance</option><option value="tareas">Tareas ejecutadas</option><option value="desvios">Desvíos y etiquetas</option></select></div>
     </div>
-    <div class="rubros-check">
-      <span style="font-size:11px;font-weight:600;color:#999;text-transform:uppercase;letter-spacing:.05em">Rubros:</span>
-      <label class="rubro-check-label"><input type="checkbox" checked> Mampostería</label>
-      <label class="rubro-check-label"><input type="checkbox" checked> Revoques</label>
-      <label class="rubro-check-label"><input type="checkbox"> Pisos</label>
-      <label class="rubro-check-label"><input type="checkbox"> Estructura</label>
-      <button class="btn btnp" style="margin-left:auto" onclick="buscarInformes()">Buscar →</button>
-    </div>
+    <button class="btn btnp" onclick="buscarInformes()" style="margin-top:.5rem">Buscar →</button>
   </div>
   <div id="inf-resultados" style="display:none">
     <div id="inf-contenido"></div>
-    <div class="card" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:.875rem 1.25rem">
-      <span style="font-size:12px;font-weight:600;color:#777">Acciones:</span>
-      <button class="btn btnp" onclick="window.print()">Imprimir / PDF</button>
-      <button class="btn" onclick="compartirInforme()">Compartir</button>
-    </div>
+    <div class="card acciones-bar"><span style="font-size:12px;font-weight:600;color:#777">Acciones:</span><button class="btn btnp" onclick="window.print()">Imprimir / PDF</button><button class="btn" onclick="compartirInforme()">Compartir</button></div>
   </div>
 </div>
 
-</div><!-- /main -->
-</div><!-- /app -->
+</div>
+</div>
+
 <div class="toast" id="toast"></div>
 
-<!-- MODAL PDF PEDIDO -->
 <div class="pdf-overlay" id="pdf-overlay" onclick="cerrarPDF(event)">
-  <div class="pdf-modal" id="pdf-modal">
-    <div class="pdf-toolbar">
-      <span class="pdf-toolbar-title">Vista previa del pedido</span>
-      <div style="display:flex;gap:8px">
-        <button class="btn btnp" onclick="window.print()">Imprimir / Guardar PDF</button>
-        <button class="btn" onclick="cerrarPDFBtn()">Cerrar</button>
-      </div>
-    </div>
+  <div class="pdf-modal">
+    <div class="pdf-toolbar"><span style="font-size:14px;font-weight:600">Vista previa</span><div style="display:flex;gap:8px"><button class="btn btnp" onclick="window.print()">Imprimir / PDF</button><button class="btn" onclick="cerrarPDFBtn()">Cerrar</button></div></div>
     <div class="pdf-body" id="pdf-body"></div>
   </div>
 </div>
 
 <script>
-const SUPABASE_URL = 'https://hzilefsxtgcqeavicfkw.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh6aWxlZnN4dGdjcWVhdmljZmt3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc0OTYwMTIsImV4cCI6MjA5MzA3MjAxMn0.MdIQuGN0TspZiauXRHpdT3E3H8rfEQRp5E4zuuQwfCc';
-const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const SUPABASE_URL='https://hzilefsxtgcqeavicfkw.supabase.co';
+const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh6aWxlZnN4dGdjcWVhdmljZmt3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc0OTYwMTIsImV4cCI6MjA5MzA3MjAxMn0.MdIQuGN0TspZiauXRHpdT3E3H8rfEQRp5E4zuuQwfCc';
+const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 
-const REND = {
-  brimax:     {'Ladrillo Brimax 12.5':{f:m=>Math.round(m*35),u:'u'},'Adhesivo cementicio':{f:m=>+(m*3.5).toFixed(1),u:'kg'}},
-  cer12:      {'Ladrillo cerámico portante 12':{f:m=>Math.round(m*15),u:'u'},'Cemento albañilería':{f:m=>+(m*11).toFixed(1),u:'kg'},'Arena gruesa':{f:m=>+(m*0.012).toFixed(3),u:'m³'}},
-  cer18:      {'Ladrillo cerámico portante 18':{f:m=>Math.round(m*15),u:'u'},'Cemento albañilería':{f:m=>+(m*13).toFixed(1),u:'kg'},'Arena gruesa':{f:m=>+(m*0.015).toFixed(3),u:'m³'}},
-  comun:      {'Ladrillo común':{f:m=>Math.round(m*55),u:'u'},'Cemento albañilería':{f:m=>+(m*11).toFixed(1),u:'kg'},'Arena gruesa':{f:m=>+(m*0.012).toFixed(3),u:'m³'}},
-  azotado:    {'Cemento Portland':{f:m=>+(m*4.2).toFixed(1),u:'kg'},'Arena fina':{f:m=>+(m*0.008).toFixed(3),u:'m³'},'Hidrófugo líquido':{f:m=>+(m*0.21).toFixed(2),u:'L'}},
-  revgrueso:  {'Cemento albañilería':{f:m=>+(m*3.8).toFixed(1),u:'kg'},'Arena fina':{f:m=>+(m*0.020).toFixed(3),u:'m³'}},
-  stukoInt:   {'Stuko interior':{f:m=>+(m*2.5).toFixed(1),u:'kg'},'Stuko int. bolsas 25kg':{f:m=>Math.ceil(m*2.5/25),u:'bol'}},
-  stukoExt:   {'Stuko exterior':{f:m=>+(m*2.75).toFixed(1),u:'kg'},'Stuko ext. bolsas 25kg':{f:m=>Math.ceil(m*2.75/25),u:'bol'}},
-  contrapiso: {'Cemento Portland':{f:m=>+(m*8).toFixed(1),u:'kg'},'Arena gruesa':{f:m=>+(m*0.08).toFixed(3),u:'m³'},'Piedra partida':{f:m=>+(m*0.06).toFixed(3),u:'m³'}},
-  ceramicos:  {'Adhesivo Klaukol':{f:m=>+(m*4.5).toFixed(1),u:'kg'},'Klaukol bolsas 25kg':{f:m=>Math.ceil(m*4.5/25),u:'bol'}},
+const REND={
+  brimax:{'Ladrillo Brimax 12.5':{f:m=>Math.round(m*35),u:'u'},'Adhesivo cementicio':{f:m=>+(m*3.5).toFixed(1),u:'kg'}},
+  cer12:{'Ladrillo cerámico portante 12':{f:m=>Math.round(m*15),u:'u'},'Cemento albañilería':{f:m=>+(m*11).toFixed(1),u:'kg'},'Arena gruesa':{f:m=>+(m*0.012).toFixed(3),u:'m³'}},
+  cer18:{'Ladrillo cerámico portante 18':{f:m=>Math.round(m*15),u:'u'},'Cemento albañilería':{f:m=>+(m*13).toFixed(1),u:'kg'},'Arena gruesa':{f:m=>+(m*0.015).toFixed(3),u:'m³'}},
+  comun:{'Ladrillo común':{f:m=>Math.round(m*55),u:'u'},'Cemento albañilería':{f:m=>+(m*11).toFixed(1),u:'kg'},'Arena gruesa':{f:m=>+(m*0.012).toFixed(3),u:'m³'}},
+  azotado:{'Cemento Portland':{f:m=>+(m*4.2).toFixed(1),u:'kg'},'Arena fina':{f:m=>+(m*0.008).toFixed(3),u:'m³'},'Hidrófugo líquido':{f:m=>+(m*0.21).toFixed(2),u:'L'}},
+  revgrueso:{'Cemento albañilería':{f:m=>+(m*3.8).toFixed(1),u:'kg'},'Arena fina':{f:m=>+(m*0.020).toFixed(3),u:'m³'}},
+  stukoInt:{'Stuko interior':{f:m=>+(m*2.5).toFixed(1),u:'kg'},'Stuko int. bolsas 25kg':{f:m=>Math.ceil(m*2.5/25),u:'bol'}},
+  stukoExt:{'Stuko exterior':{f:m=>+(m*2.75).toFixed(1),u:'kg'},'Stuko ext. bolsas 25kg':{f:m=>Math.ceil(m*2.75/25),u:'bol'}},
+  contrapiso:{'Cemento Portland':{f:m=>+(m*8).toFixed(1),u:'kg'},'Arena gruesa':{f:m=>+(m*0.08).toFixed(3),u:'m³'},'Piedra partida':{f:m=>+(m*0.06).toFixed(3),u:'m³'}},
+  ceramicos:{'Adhesivo Klaukol':{f:m=>+(m*4.5).toFixed(1),u:'kg'},'Klaukol bolsas 25kg':{f:m=>Math.ceil(m*4.5/25),u:'bol'}},
 };
-
-const GRUPOS_ORDEN = ['Mampostería','Aglomerantes','Áridos','Hidrófugos','Premezclas'];
-const GRUPOS_MAT = {
+const TAREAS_DEF=[
+  {id:'np-brimax',id2:'p-brimax',tarea:'Muro ladrillo Brimax 12.5 cm',rubro:'Mampostería',u:'m²',rend:'brimax'},
+  {id:'np-cer12',id2:'p-cer12',tarea:'Muro ladrillo cerámico portante 12',rubro:'Mampostería',u:'m²',rend:'cer12'},
+  {id:'np-cer18',id2:null,tarea:'Muro ladrillo cerámico portante 18',rubro:'Mampostería',u:'m²',rend:'cer18'},
+  {id:'np-comun',id2:'p-comun',tarea:'Muro ladrillo común 15 cm',rubro:'Mampostería',u:'m²',rend:'comun'},
+  {id:'np-azotado',id2:'p-azotado',tarea:'Azotado hidrófugo',rubro:'Revoques',u:'m²',rend:'azotado'},
+  {id:'np-revgrueso',id2:'p-revgrueso',tarea:'Revoque grueso',rubro:'Revoques',u:'m²',rend:'revgrueso'},
+  {id:'np-stuko-int',id2:'p-stuko',tarea:'Stuko interior',rubro:'Revoques',u:'m²',rend:'stukoInt'},
+  {id:'np-stuko-ext',id2:null,tarea:'Stuko exterior',rubro:'Revoques',u:'m²',rend:'stukoExt'},
+  {id:'np-contrapiso',id2:'p-contrapiso',tarea:'Contrapiso H15',rubro:'Pisos',u:'m²',rend:'contrapiso'},
+  {id:'np-ceramicos',id2:'p-pegado',tarea:'Pegado de cerámicos',rubro:'Pisos',u:'m²',rend:'ceramicos'},
+];
+const GRUPOS_ORDEN=['Mampostería','Aglomerantes','Áridos','Hidrófugos','Premezclas'];
+const GRUPOS_MAT={
   'Mampostería':['Ladrillo Brimax 12.5','Adhesivo cementicio','Ladrillo cerámico portante 12','Ladrillo cerámico portante 18','Ladrillo común'],
   'Aglomerantes':['Cemento Portland','Cemento albañilería','Cal hidratada'],
   'Áridos':['Arena gruesa','Arena fina','Piedra partida'],
   'Hidrófugos':['Hidrófugo líquido'],
   'Premezclas':['Stuko interior','Stuko int. bolsas 25kg','Stuko exterior','Stuko ext. bolsas 25kg','Adhesivo Klaukol','Klaukol bolsas 25kg'],
 };
+const ETIQUETAS={'error-calculo':{label:'Error de cálculo',cls:'etiq-calculo'},'error-proyecto':{label:'Error de proyecto',cls:'etiq-proyecto'},'modificacion-obra':{label:'Modificación en obra',cls:'etiq-obra'},'error-ejecucion':{label:'Error de ejecución',cls:'etiq-ejecucion'}};
 
-let proyActivo = null;
-let npData = {};
-let modoNP = 'tareas';
-let pedidoTotales = {};
+let proyActivo=null,npData={},modoNP='tareas',pedidoTotales={},pedidoTareas=[],pedidoMeta={},pedidoPreviewData=null,usuarioActual=null;
 
-function toast(msg, dur=2500) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.style.display = 'block';
-  setTimeout(()=>t.style.display='none', dur);
+function toast(msg,dur=2500){const t=document.getElementById('toast');t.textContent=msg;t.style.display='block';setTimeout(()=>t.style.display='none',dur)}
+function hoy(){return new Date().toLocaleDateString('es-AR')}
+function fmtVal(val){return Number.isInteger(val)?val.toLocaleString('es-AR'):val.toLocaleString('es-AR',{minimumFractionDigits:1,maximumFractionDigits:3})}
+function fmtFecha(str){return str?new Date(str+'T12:00:00').toLocaleDateString('es-AR'):''}
+
+// AUTH
+let authMode='login';
+function setAuthTab(mode,btn){authMode=mode;document.querySelectorAll('.auth-tab').forEach(b=>b.classList.remove('active'));btn.classList.add('active');document.getElementById('auth-confirm-field').style.display=mode==='register'?'block':'none';document.getElementById('auth-btn').textContent=mode==='register'?'Registrarse':'Ingresar';document.getElementById('auth-error').style.display='none';}
+async function authAction(){
+  const email=document.getElementById('auth-email').value.trim();
+  const pass=document.getElementById('auth-password').value;
+  const errEl=document.getElementById('auth-error');
+  errEl.style.display='none';
+  if(!email||!pass){errEl.textContent='Completá email y contraseña';errEl.style.display='block';return}
+  if(authMode==='register'){
+    const confirm=document.getElementById('auth-confirm').value;
+    if(pass!==confirm){errEl.textContent='Las contraseñas no coinciden';errEl.style.display='block';return}
+    const{error}=await sb.auth.signUp({email,password:pass});
+    if(error){errEl.textContent=error.message;errEl.style.display='block';return}
+    const m=document.getElementById('auth-msg');m.textContent='✓ Registrado. Revisá tu email para confirmar.';m.style.display='block';
+  }else{
+    const{data,error}=await sb.auth.signInWithPassword({email,password:pass});
+    if(error){errEl.textContent='Email o contraseña incorrectos';errEl.style.display='block';return}
+    iniciarApp(data.user);
+  }
 }
+function iniciarApp(user){usuarioActual=user;document.getElementById('auth-wrap').style.display='none';document.getElementById('app-wrap').style.display='flex';document.getElementById('nav-user-email').textContent=user.email;cargarProyectos();cargarHistorialInformes();}
+async function cerrarSesion(){await sb.auth.signOut();location.reload();}
 
-function nav(id) {
+// NAV
+function nav(id){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
-  const pg = document.getElementById('pg-'+id);
-  if(pg) pg.classList.add('active');
-  const map = {'inicio':0,'informes':1,'computo':2,'pedidos':3,'nuevo-pedido':4};
-  const items = document.querySelectorAll('.nav-item');
-  if(map[id]!==undefined) items[map[id]].classList.add('active');
-  if(id==='inicio') cargarProyectos();
-  if(id==='pedidos' && proyActivo) cargarPedidos();
-  if(id==='computo' && proyActivo) cargarComputo();
-  if(id==='nuevo-pedido') resetNuevoPedido();
+  const pg=document.getElementById('pg-'+id);if(pg)pg.classList.add('active');
+  const map={'inicio':0,'informes':1,'computo':2,'pedidos':3,'nuevo-pedido':4};
+  const items=document.querySelectorAll('.nav-item');
+  if(map[id]!==undefined)items[map[id]].classList.add('active');
+  if(id==='inicio')cargarProyectos();
+  if(id==='pedidos'){cargarPedidos();document.getElementById('pedido-preview').style.display='none';document.getElementById('pedidos-lista').style.display='block';}
+  if(id==='computo'&&proyActivo)cargarComputo();
+  if(id==='nuevo-pedido')resetNuevoPedido();
+  if(id==='informes')cargarHistorialInformes();
 }
 
-function hoy() { return new Date().toLocaleDateString('es-AR'); }
-
-function fmtVal(val) {
-  return Number.isInteger(val) ? val.toLocaleString('es-AR') : val.toLocaleString('es-AR',{minimumFractionDigits:1,maximumFractionDigits:3});
+// SELECTORES
+function poblarSelectores(data){
+  const opts='<option value="">— Seleccioná un proyecto —</option>'+data.map(p=>`<option value="${p.id}">${p.nombre}${p.localidad?' — '+p.localidad:''}</option>`).join('');
+  const optsAll='<option value="">— Todos los proyectos —</option>'+data.map(p=>`<option value="${p.id}">${p.nombre}${p.localidad?' — '+p.localidad:''}</option>`).join('');
+  ['ped-proyecto-sel','np-proyecto-sel'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=opts;});
+  const inf=document.getElementById('inf-proyecto');if(inf)inf.innerHTML=optsAll;
+  if(proyActivo){['ped-proyecto-sel','np-proyecto-sel'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=proyActivo.id;});const inf2=document.getElementById('inf-proyecto');if(inf2)inf2.value=proyActivo.id;}
 }
-
-function poblarSelectores(data) {
-  const opts = '<option value="">— Seleccioná un proyecto —</option>' +
-    data.map(p=>`<option value="${p.id}">${p.nombre}${p.localidad?' — '+p.localidad:''}</option>`).join('');
-  ['ped-proyecto-sel','np-proyecto-sel','inf-proyecto'].forEach(id=>{
-    const el = document.getElementById(id);
-    if(el) el.innerHTML = opts;
-  });
-  // Si hay proyecto activo, preseleccionarlo
-  if(proyActivo) {
-    ['ped-proyecto-sel','np-proyecto-sel','inf-proyecto'].forEach(id=>{
-      const el = document.getElementById(id);
-      if(el) el.value = proyActivo.id;
-    });
+async function cambiarProyectoPedidos(){
+  const id=document.getElementById('ped-proyecto-sel').value;
+  if(!id){document.getElementById('pedidos-lista').innerHTML='<div class="loading">Seleccioná un proyecto</div>';return;}
+  const{data}=await sb.from('proyectos').select('*').eq('id',id).single();
+  if(data){proyActivo=data;document.getElementById('sidebar-proj-name').textContent=data.nombre;document.getElementById('pedidos-sub').textContent=data.nombre+(data.localidad?' — '+data.localidad:'');cargarPedidos();}
+}
+async function cambiarProyectoNuevoPedido(){
+  const id=document.getElementById('np-proyecto-sel').value;if(!id)return;
+  const{data}=await sb.from('proyectos').select('*').eq('id',id).single();
+  if(data){
+    proyActivo=data;document.getElementById('sidebar-proj-name').textContent=data.nombre;
+    document.getElementById('pedido-sub').textContent=data.nombre+(data.localidad?' — '+data.localidad:'')+' · '+hoy();
+    const{data:tareas}=await sb.from('proyecto_tareas').select('*').eq('proyecto_id',id);
+    const sel=document.getElementById('pm-rubro-vinculado');
+    if(sel)sel.innerHTML='<option value="">— Sin vinculación —</option>'+(tareas||[]).map(t=>`<option value="${t.tarea}">${t.tarea}</option>`).join('');
   }
 }
 
-async function cambiarProyectoPedidos() {
-  const id = document.getElementById('ped-proyecto-sel').value;
-  if(!id) { document.getElementById('pedidos-contenido').innerHTML = '<div class="loading">Seleccioná un proyecto para ver sus pedidos</div>'; return; }
-  const {data} = await sb.from('proyectos').select('*').eq('id',id).single();
-  if(data) {
-    proyActivo = data;
-    document.getElementById('sidebar-proj-name').textContent = data.nombre;
-    document.getElementById('pedidos-sub').textContent = data.nombre + (data.localidad?' — '+data.localidad:'');
-    cargarPedidos();
-  }
-}
-
-async function cambiarProyectoNuevoPedido() {
-  const id = document.getElementById('np-proyecto-sel').value;
-  if(!id) return;
-  const {data} = await sb.from('proyectos').select('*').eq('id',id).single();
-  if(data) {
-    proyActivo = data;
-    document.getElementById('sidebar-proj-name').textContent = data.nombre;
-    document.getElementById('pedido-sub').textContent = data.nombre + (data.localidad?' — '+data.localidad:'') + ' · ' + hoy();
-  }
-}
-
-// ---- PROYECTOS ----
-async function cargarProyectos() {
-  const {data, error} = await sb.from('proyectos').select('*').order('created_at', {ascending:false});
-  const cont = document.getElementById('lista-proyectos');
-  if(error || !data || data.length===0) {
-    cont.innerHTML = '<div class="empty"><div class="empty-icon">🏗️</div><div style="font-weight:600;color:#777;margin-bottom:4px">Sin proyectos todavía</div><div style="font-size:13px">Creá tu primer proyecto con el botón de arriba</div></div>';
-    return;
-  }
-  const sel = proyActivo ? proyActivo.id : null;
-  cont.innerHTML = data.map(p => {
-    const badge = p.estado==='finalizado' ? 'badge-green' : p.estado==='presupuesto' ? 'badge-gray' : 'badge-blue';
-    const label = p.estado==='finalizado' ? 'Finalizado' : p.estado==='presupuesto' ? 'Presupuesto' : 'En curso';
-    const fecha = p.fecha_inicio ? new Date(p.fecha_inicio+'T12:00:00').toLocaleDateString('es-AR') : '';
-    return `<div class="pcard ${p.id===sel?'sel':''}" onclick="abrirProyecto('${p.id}')">
-      <div class="pname">${p.nombre}</div>
-      <div class="pmeta">${p.localidad||''} ${fecha?'· '+fecha:''}</div>
-      <div class="badge ${badge}">${label}</div>
-    </div>`;
-  }).join('');
-
-  // Actualizar todos los selectores de proyecto
+// PROYECTOS
+async function cargarProyectos(){
+  if(!usuarioActual)return;
+  const{data}=await sb.from('proyectos').select('*').eq('user_id',usuarioActual.id).order('created_at',{ascending:false});
+  const cont=document.getElementById('lista-proyectos');
+  if(!data||data.length===0){cont.innerHTML='<div class="empty"><div class="empty-icon">🏗️</div><div style="font-weight:600;color:#777;margin-bottom:4px">Sin proyectos todavía</div><div style="font-size:13px">Creá tu primer proyecto con el botón de arriba</div></div>';return;}
   poblarSelectores(data);
-
-  // Actualizar select de informes (legacy)
-  const sel2 = document.getElementById('inf-proyecto');
-  if(sel2) sel2.innerHTML = data.map(p=>`<option value="${p.id}">${p.nombre}${p.localidad?' — '+p.localidad:''}</option>`).join('');
+  const sel=proyActivo?proyActivo.id:null;
+  cont.innerHTML=data.map(p=>{
+    const badge=p.estado==='finalizado'?'badge-green':p.estado==='presupuesto'?'badge-gray':'badge-blue';
+    const label=p.estado==='finalizado'?'Finalizado':p.estado==='presupuesto'?'Presupuesto':'En curso';
+    return`<div class="pcard ${p.id===sel?'sel':''}" onclick="abrirProyecto('${p.id}')"><div class="pname">${p.nombre}</div><div class="pmeta">${p.localidad||''} ${p.fecha_inicio?'· '+fmtFecha(p.fecha_inicio):''}</div><div class="badge ${badge}">${label}</div></div>`;
+  }).join('');
 }
-
-async function abrirProyecto(id) {
-  const {data} = await sb.from('proyectos').select('*').eq('id',id).single();
-  if(!data) return;
-  proyActivo = data;
-  document.getElementById('sidebar-proj-name').textContent = data.nombre;
-  document.getElementById('computo-sub').textContent = data.nombre + (data.localidad?' — '+data.localidad:'');
-  document.getElementById('pedidos-sub').textContent = data.nombre + (data.localidad?' — '+data.localidad:'');
-  document.getElementById('pedido-sub').textContent = data.nombre + (data.localidad?' — '+data.localidad:'') + ' · ' + hoy();
+async function abrirProyecto(id){
+  const{data}=await sb.from('proyectos').select('*').eq('id',id).single();
+  if(!data)return;
+  proyActivo=data;document.getElementById('sidebar-proj-name').textContent=data.nombre;
+  document.getElementById('computo-sub').textContent=data.nombre+(data.localidad?' — '+data.localidad:'');
+  document.getElementById('pedidos-sub').textContent=data.nombre+(data.localidad?' — '+data.localidad:'');
   nav('computo');
 }
 
-// ---- PESTAÑAS CÓMPUTO ----
-function setTabComputo(tab, btn) {
-  document.querySelectorAll('#pg-computo .mode-toggle .mbtn').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  document.getElementById('computo-tab-materiales').style.display = tab==='materiales'?'block':'none';
-  document.getElementById('computo-tab-tareas').style.display = tab==='tareas'?'block':'none';
-}
-
-// ---- CÓMPUTO ----
-async function cargarComputo() {
-  if(!proyActivo) return;
-  // Pestaña materiales
-  const {data: mats} = await sb.from('proyecto_materiales').select('*').eq('proyecto_id', proyActivo.id).order('material');
-  const contMats = document.getElementById('computo-tab-materiales');
-  if(!mats || mats.length===0) {
-    contMats.innerHTML = '<div class="empty"><div class="empty-icon">📋</div><div style="font-weight:600;color:#777;margin-bottom:4px">Sin materiales cargados</div></div>';
-  } else {
-    let html = '<div class="card">';
-    for(const grp of GRUPOS_ORDEN) {
-      const items = mats.filter(m => GRUPOS_MAT[grp] && GRUPOS_MAT[grp].some(g => m.material.startsWith(g)));
-      if(!items.length) continue;
-      html += `<div class="grp"><div class="grp-label">${grp}</div>`;
-      for(const m of items) {
-        const acopio = m.cantidad_total - m.cantidad_pedida;
-        html += `<div class="mat-row"><span>${m.material}</span>
-          <div class="mat-cols">
-            <div class="mc"><div class="mc-lbl">Total</div><div class="mc-val">${fmtVal(m.cantidad_total)} ${m.unidad}</div></div>
-            <div class="mc"><div class="mc-lbl">Pedido</div><div class="mc-val">${fmtVal(m.cantidad_pedida)} ${m.unidad}</div></div>
-            <div class="mc"><div class="mc-lbl">Acopio</div><div class="mc-val ${acopio<=0?'warn':'ok'}">${fmtVal(acopio)} ${m.unidad}</div></div>
-          </div></div>`;
+// CÓMPUTO
+function setTabComputo(tab,btn){document.querySelectorAll('#pg-computo .mode-toggle .mbtn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');document.getElementById('computo-tab-materiales').style.display=tab==='materiales'?'block':'none';document.getElementById('computo-tab-tareas').style.display=tab==='tareas'?'block':'none';}
+async function cargarComputo(){
+  if(!proyActivo)return;
+  const{data:mats}=await sb.from('proyecto_materiales').select('*').eq('proyecto_id',proyActivo.id).order('material');
+  const contM=document.getElementById('computo-tab-materiales');
+  if(!mats||mats.length===0){contM.innerHTML='<div class="empty"><div class="empty-icon">📋</div><div style="font-weight:600;color:#777">Sin materiales cargados</div></div>';}
+  else{
+    let html='<div class="card">';
+    for(const grp of GRUPOS_ORDEN){
+      const items=mats.filter(m=>GRUPOS_MAT[grp]&&GRUPOS_MAT[grp].some(g=>m.material.startsWith(g)));
+      if(!items.length)continue;
+      html+=`<div class="grp"><div class="grp-label">${grp}</div>`;
+      for(const m of items){
+        const acopio=m.cantidad_total-m.cantidad_pedida;
+        const desvio=acopio<0?Math.abs(acopio):0;
+        let cols;
+        if(desvio>0){
+          cols=`<div class="mat-cols"><div class="mc"><div class="mc-lbl">Total</div><div class="mc-val">${fmtVal(m.cantidad_total)} ${m.unidad}</div></div><div class="mc"><div class="mc-lbl">Pedido</div><div class="mc-val">${fmtVal(m.cantidad_pedida)} ${m.unidad}</div></div><div class="mc"><div class="mc-lbl">Acopio</div><div class="mc-val warn">0 ${m.unidad}</div></div><div class="mc"><div class="mc-lbl">Desvío</div><div class="mc-val desv">+${fmtVal(desvio)} ${m.unidad}</div></div></div>`;
+        }else{
+          cols=`<div class="mat-cols"><div class="mc"><div class="mc-lbl">Total</div><div class="mc-val">${fmtVal(m.cantidad_total)} ${m.unidad}</div></div><div class="mc"><div class="mc-lbl">Pedido</div><div class="mc-val">${fmtVal(m.cantidad_pedida)} ${m.unidad}</div></div><div class="mc"><div class="mc-lbl">Acopio</div><div class="mc-val ${acopio===0?'warn':'ok'}">${fmtVal(acopio)} ${m.unidad}</div></div></div>`;
+        }
+        html+=`<div class="mat-row"><span>${m.material}</span>${cols}</div>`;
       }
-      html += '</div>';
+      html+='</div>';
     }
-    html += '</div>';
-    contMats.innerHTML = html;
+    html+='</div>';contM.innerHTML=html;
   }
-
-  // Pestaña tareas
-  const {data: tareas} = await sb.from('proyecto_tareas').select('*').eq('proyecto_id', proyActivo.id);
-  const contTareas = document.getElementById('computo-tab-tareas');
-  if(!tareas || tareas.length===0) {
-    contTareas.innerHTML = '<div class="empty"><div class="empty-icon">🔨</div><div style="font-weight:600;color:#777;margin-bottom:4px">Sin tareas cargadas</div><div style="font-size:13px">Cargá el proyecto por tareas (m²) para ver el avance acá</div></div>';
-  } else {
-    // Calcular acumulado por tarea desde pedidos
-    const {data: pedTareas} = await sb.from('pedido_tareas').select('*, pedidos!inner(proyecto_id)').eq('pedidos.proyecto_id', proyActivo.id);
-    const acumulados = {};
-    (pedTareas||[]).forEach(t => {
-      if(!acumulados[t.tarea]) acumulados[t.tarea] = 0;
-      acumulados[t.tarea] += t.cantidad;
-    });
-    let html = '<div class="card"><table class="cert-tabla"><thead><tr><th>Tarea</th><th>Total obra</th><th>Ejecutado</th><th>Saldo</th></tr></thead><tbody>';
-    tareas.forEach(t => {
-      const ejec = acumulados[t.tarea] || 0;
-      const saldo = t.cantidad - ejec;
-      html += `<tr><td>${t.tarea}</td><td>${fmtVal(t.cantidad)} ${t.unidad}</td><td>${fmtVal(ejec)} ${t.unidad}</td><td class="${saldo<=0?'num-ok':'num-warn'}">${fmtVal(saldo)} ${t.unidad}</td></tr>`;
-    });
-    html += '</tbody></table></div>';
-    contTareas.innerHTML = html;
+  const{data:tareas}=await sb.from('proyecto_tareas').select('*').eq('proyecto_id',proyActivo.id);
+  const contT=document.getElementById('computo-tab-tareas');
+  if(!tareas||tareas.length===0){contT.innerHTML='<div class="empty"><div class="empty-icon">🔨</div><div style="font-weight:600;color:#777;margin-bottom:4px">Sin tareas cargadas</div><div style="font-size:13px">Cargá el proyecto por tareas (m²) para ver el avance acá</div></div>';}
+  else{
+    const{data:pedTareas}=await sb.from('pedido_tareas').select('*, pedidos!inner(proyecto_id)').eq('pedidos.proyecto_id',proyActivo.id);
+    const acum={};(pedTareas||[]).forEach(t=>{if(!acum[t.tarea])acum[t.tarea]=0;acum[t.tarea]+=t.cantidad;});
+    let html='<div class="card"><table class="cert-tabla"><thead><tr><th>Tarea</th><th>Total obra</th><th>Ejecutado</th><th>Saldo</th></tr></thead><tbody>';
+    tareas.forEach(t=>{const ejec=acum[t.tarea]||0;const saldo=t.cantidad-ejec;html+=`<tr><td>${t.tarea}</td><td>${fmtVal(t.cantidad)} ${t.unidad}</td><td>${fmtVal(ejec)} ${t.unidad}</td><td class="${saldo<=0?'num-ok':'num-warn'}">${fmtVal(saldo)} ${t.unidad}</td></tr>`;});
+    html+='</tbody></table></div>';contT.innerHTML=html;
   }
 }
 
-// ---- RESET NUEVO PEDIDO ----
-function resetNuevoPedido() {
-  ['p-brimax','p-cer12','p-comun','p-azotado','p-revgrueso','p-stuko','p-contrapiso','p-pegado',
-   'pm-arena-g','pm-arena-f','pm-cto-port','pm-cto-alb'].forEach(id => {
-    const el = document.getElementById(id);
-    if(el) el.value = '';
+// PEDIDOS
+async function cargarPedidos(){
+  if(!proyActivo)return;
+  const{data}=await sb.from('pedidos').select('*, pedido_materiales(*)').eq('proyecto_id',proyActivo.id).order('fecha',{ascending:false});
+  const cont=document.getElementById('pedidos-lista');
+  if(!data||data.length===0){cont.innerHTML='<div class="empty"><div class="empty-icon">📦</div><div style="font-weight:600;color:#777;margin-bottom:4px">Sin pedidos todavía</div></div>';return;}
+  let html='<div class="card"><table class="pedido-tabla"><thead><tr><th>Pedido</th><th>Fecha</th><th>Tipo</th><th style="text-align:center">Enviado</th><th style="text-align:right">Ver</th></tr></thead><tbody>';
+  data.forEach((p,i)=>{
+    const etiq=p.etiqueta&&ETIQUETAS[p.etiqueta]?`<span class="etiqueta-badge ${ETIQUETAS[p.etiqueta].cls}">${ETIQUETAS[p.etiqueta].label}</span>`:'';
+    const tipo=p.tipo_carga==='mats'?'Materiales'+etiq:'Tareas';
+    html+=`<tr><td style="font-weight:600">Pedido #${data.length-i}</td><td style="color:#777">${fmtFecha(p.fecha)}</td><td style="font-size:12px">${tipo}</td><td style="text-align:center"><div class="chk ${p.enviado?'on':''}" onclick="toggleEnviado('${p.id}',${p.enviado},this)"><svg viewBox="0 0 10 10"><polyline points="1.5,5 4,7.5 8.5,2.5"/></svg></div></td><td style="text-align:right"><button class="btn" style="padding:4px 10px;font-size:11px" onclick="verPedido('${p.id}',${data.length-i})">Ver →</button></td></tr>`;
   });
-  // Resetear modo a tareas
-  document.querySelectorAll('#pg-nuevo-pedido .mode-toggle .mbtn').forEach((b,i)=>{
-    b.classList.toggle('active', i===0);
-  });
-  document.getElementById('ped-modo-tareas').style.display = 'block';
-  document.getElementById('ped-modo-mats').style.display = 'none';
+  html+='</tbody></table></div>';cont.innerHTML=html;
+}
+async function toggleEnviado(id,actual,el){el.classList.toggle('on');await sb.from('pedidos').update({enviado:!actual}).eq('id',id);toast(!actual?'✓ Marcado como enviado':'Marcado como pendiente');}
+async function verPedido(pedidoId,numero){
+  const{data:ped}=await sb.from('pedidos').select('*, pedido_materiales(*), pedido_tareas(*)').eq('id',pedidoId).single();
+  if(!ped)return;
+  pedidoPreviewData={...ped,numero};
+  document.getElementById('ped-preview-titulo').textContent=`Pedido #${numero}`;
+  document.getElementById('ped-preview-sub').textContent=fmtFecha(ped.fecha)+(ped.enviado?' · Enviado al corralón':' · Pendiente de envío');
+  document.getElementById('btn-toggle-enviado').textContent=ped.enviado?'Marcar como no enviado':'Marcar como enviado';
+  let html='';
+  if(ped.pedido_tareas&&ped.pedido_tareas.length>0){html+='<div class="card"><div class="grp-label">Tareas ejecutadas</div>';ped.pedido_tareas.forEach(t=>{html+=`<div class="res-row"><span>${t.tarea}</span><span class="res-qty">${fmtVal(t.cantidad)} ${t.unidad}</span></div>`;});html+='</div>';}
+  for(const grp of GRUPOS_ORDEN){const items=(ped.pedido_materiales||[]).filter(m=>GRUPOS_MAT[grp]&&GRUPOS_MAT[grp].some(g=>m.material.startsWith(g)));if(!items.length)continue;html+=`<div class="card"><div class="grp-label">${grp}</div>`;items.forEach(m=>{html+=`<div class="res-row"><span>${m.material}</span><span class="res-qty">${fmtVal(m.cantidad)} ${m.unidad}</span></div>`;});html+='</div>';}
+  if(ped.etiqueta||ped.comentario||ped.rubro_vinculado){html+='<div class="card" style="background:#fafafa">';if(ped.rubro_vinculado)html+=`<div style="font-size:12px;color:#555;margin-bottom:4px">Vinculado a: <strong>${ped.rubro_vinculado}</strong></div>`;if(ped.etiqueta&&ETIQUETAS[ped.etiqueta])html+=`<div style="margin-bottom:4px"><span class="etiqueta-badge ${ETIQUETAS[ped.etiqueta].cls}">${ETIQUETAS[ped.etiqueta].label}</span></div>`;if(ped.comentario)html+=`<div style="font-size:12px;color:#555;font-style:italic">"${ped.comentario}"</div>`;html+='</div>';}
+  document.getElementById('ped-preview-contenido').innerHTML=html;
+  document.getElementById('pedidos-lista').style.display='none';
+  document.getElementById('pedido-preview').style.display='block';
+}
+function cerrarPedidoPreview(){document.getElementById('pedidos-lista').style.display='block';document.getElementById('pedido-preview').style.display='none';pedidoPreviewData=null;}
+async function toggleEnviadoPreview(){if(!pedidoPreviewData)return;const nuevo=!pedidoPreviewData.enviado;await sb.from('pedidos').update({enviado:nuevo}).eq('id',pedidoPreviewData.id);pedidoPreviewData.enviado=nuevo;document.getElementById('btn-toggle-enviado').textContent=nuevo?'Marcar como no enviado':'Marcar como enviado';document.getElementById('ped-preview-sub').textContent=fmtFecha(pedidoPreviewData.fecha)+(nuevo?' · Enviado al corralón':' · Pendiente de envío');toast(nuevo?'✓ Marcado como enviado':'Marcado como pendiente');}
+function imprimirPedidoPreview(){if(pedidoPreviewData)abrirPDFPedido(pedidoPreviewData.id,pedidoPreviewData.numero);}
+
+// NUEVO PROYECTO
+function irPaso2(){const nombre=document.getElementById('np-nombre').value.trim();if(!nombre){toast('Ingresá el nombre de la obra');return;}npData={nombre,localidad:document.getElementById('np-localidad').value.trim(),fecha:document.getElementById('np-fecha').value,estado:document.getElementById('np-estado').value,tareas:[],totales:{}};document.getElementById('np2-titulo').textContent=nombre+(npData.localidad?' — '+npData.localidad:'');nav('np-paso2');}
+function setModoNP(modo,btn){modoNP=modo;document.querySelectorAll('#pg-np-paso2 .mode-toggle .mbtn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');document.getElementById('np-modo-tareas').style.display=modo==='tareas'?'block':'none';document.getElementById('np-modo-mats').style.display=modo==='mats'?'block':'none';}
+function calcularNuevoProyecto(){
+  const totales={};npData.tareas=[];
+  if(modoNP==='tareas'){
+    TAREAS_DEF.forEach(t=>{const el=document.getElementById(t.id);const val=el?parseFloat(el.value)||0:0;if(val<=0)return;npData.tareas.push({rubro:t.rubro,tarea:t.tarea,cantidad:val,unidad:t.u});Object.entries(REND[t.rend]).forEach(([mat,obj])=>{if(!totales[mat])totales[mat]={val:0,u:obj.u};totales[mat].val+=obj.f(val);});});
+  }else{Object.assign(totales,leerMatsDirectos('npm'));}
+  npData.totales=totales;document.getElementById('np3-titulo').textContent=npData.nombre+(npData.localidad?' — '+npData.localidad:'');document.getElementById('np3-resultado').innerHTML=renderResultado(totales);nav('np-paso3');
+}
+async function guardarProyecto(){
+  const btn=document.getElementById('btn-guardar-proyecto');btn.disabled=true;btn.textContent='Guardando...';
+  const{data:proj,error}=await sb.from('proyectos').insert({nombre:npData.nombre,localidad:npData.localidad||null,fecha_inicio:npData.fecha||null,estado:npData.estado||'en-curso',user_id:usuarioActual.id}).select().single();
+  if(error||!proj){toast('Error al guardar');btn.disabled=false;btn.textContent='Guardar proyecto ✓';return;}
+  const mats=Object.entries(npData.totales||{}).map(([mat,{val,u}])=>({proyecto_id:proj.id,material:mat,cantidad_total:val,cantidad_pedida:0,unidad:u}));
+  if(mats.length)await sb.from('proyecto_materiales').insert(mats);
+  const tareas=(npData.tareas||[]).map(t=>({proyecto_id:proj.id,rubro:t.rubro,tarea:t.tarea,cantidad:t.cantidad,unidad:t.unidad}));
+  if(tareas.length)await sb.from('proyecto_tareas').insert(tareas);
+  proyActivo=proj;document.getElementById('sidebar-proj-name').textContent=proj.nombre;document.getElementById('computo-sub').textContent=proj.nombre+(proj.localidad?' — '+proj.localidad:'');document.getElementById('pedidos-sub').textContent=proj.nombre+(proj.localidad?' — '+proj.localidad:'');
+  toast('✓ Proyecto guardado');btn.disabled=false;btn.textContent='Guardar proyecto ✓';nav('computo');
+}
+async function confirmarEliminar(){if(!proyActivo)return;if(!confirm(`¿Eliminar el proyecto "${proyActivo.nombre}"? Esta acción no se puede deshacer.`))return;await sb.from('proyectos').delete().eq('id',proyActivo.id);proyActivo=null;document.getElementById('sidebar-proj-name').textContent='— ninguno —';toast('Proyecto eliminado');nav('inicio');}
+
+// NUEVO PEDIDO
+function resetNuevoPedido(){['p-brimax','p-cer12','p-comun','p-azotado','p-revgrueso','p-stuko','p-contrapiso','p-pegado','pm-arena-g','pm-arena-f','pm-cto-port','pm-cto-alb','pm-cal','pm-brimax-u','pm-comun-u','pm-adhesivo','pm-comentario'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});const etiq=document.getElementById('pm-etiqueta');if(etiq)etiq.value='';const rv=document.getElementById('pm-rubro-vinculado');if(rv)rv.value='';document.querySelectorAll('#pg-nuevo-pedido .mode-toggle .mbtn').forEach((b,i)=>b.classList.toggle('active',i===0));document.getElementById('ped-modo-tareas').style.display='block';document.getElementById('ped-modo-mats').style.display='none';}
+function setModoPedido(modo,btn){document.querySelectorAll('#pg-nuevo-pedido .mode-toggle .mbtn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');document.getElementById('ped-modo-tareas').style.display=modo==='tareas'?'block':'none';document.getElementById('ped-modo-mats').style.display=modo==='mats'?'block':'none';}
+function calcularPedido(){
+  const totales={};pedidoTareas=[];
+  TAREAS_DEF.filter(t=>t.id2).forEach(t=>{const el=document.getElementById(t.id2);const val=el?parseFloat(el.value)||0:0;if(val<=0)return;pedidoTareas.push({tarea:t.tarea,rubro:t.rubro,cantidad:val,unidad:t.u});Object.entries(REND[t.rend]).forEach(([mat,obj])=>{if(!totales[mat])totales[mat]={val:0,u:obj.u};totales[mat].val+=obj.f(val);});});
+  pedidoTotales=totales;pedidoMeta={tipo:'tareas'};
+  document.getElementById('ped-res-sub').textContent=(proyActivo?.nombre||'')+' · '+hoy();
+  document.getElementById('ped-res-contenido').innerHTML=renderResultadoConTareas(totales,pedidoTareas);nav('pedido-resultado');
+}
+function confirmarPedidoDirecto(){
+  pedidoTareas=[];pedidoTotales=leerMatsDirectos('pm');
+  pedidoMeta={tipo:'mats',etiqueta:document.getElementById('pm-etiqueta').value,comentario:document.getElementById('pm-comentario').value,rubro_vinculado:document.getElementById('pm-rubro-vinculado').value};
+  document.getElementById('ped-res-sub').textContent=(proyActivo?.nombre||'')+' · '+hoy();
+  let html=renderResultado(pedidoTotales);
+  if(pedidoMeta.etiqueta||pedidoMeta.comentario||pedidoMeta.rubro_vinculado){html+='<div class="card" style="background:#fafafa">';if(pedidoMeta.rubro_vinculado)html+=`<div style="font-size:12px;color:#555;margin-bottom:4px">Vinculado a: <strong>${pedidoMeta.rubro_vinculado}</strong></div>`;if(pedidoMeta.etiqueta&&ETIQUETAS[pedidoMeta.etiqueta])html+=`<div style="margin-bottom:4px"><span class="etiqueta-badge ${ETIQUETAS[pedidoMeta.etiqueta].cls}">${ETIQUETAS[pedidoMeta.etiqueta].label}</span></div>`;if(pedidoMeta.comentario)html+=`<div style="font-size:12px;color:#555;font-style:italic">"${pedidoMeta.comentario}"</div>`;html+='</div>';}
+  document.getElementById('ped-res-contenido').innerHTML=html;nav('pedido-resultado');
+}
+async function guardarPedido(){
+  if(!proyActivo){toast('Seleccioná un proyecto primero');return;}
+  const{data:ped,error}=await sb.from('pedidos').insert({proyecto_id:proyActivo.id,fecha:new Date().toISOString().split('T')[0],enviado:false,tipo_carga:pedidoMeta.tipo||'tareas',etiqueta:pedidoMeta.etiqueta||null,comentario:pedidoMeta.comentario||null,rubro_vinculado:pedidoMeta.rubro_vinculado||null}).select().single();
+  if(error||!ped){toast('Error al guardar pedido');return;}
+  const mats=Object.entries(pedidoTotales).map(([mat,{val,u}])=>({pedido_id:ped.id,material:mat,cantidad:val,unidad:u}));
+  if(mats.length)await sb.from('pedido_materiales').insert(mats);
+  if(pedidoTareas.length)await sb.from('pedido_tareas').insert(pedidoTareas.map(t=>({pedido_id:ped.id,rubro:t.rubro,tarea:t.tarea,cantidad:t.cantidad,unidad:t.unidad})));
+  for(const[mat,{val}]of Object.entries(pedidoTotales)){const{data:ex}=await sb.from('proyecto_materiales').select('*').eq('proyecto_id',proyActivo.id).eq('material',mat).single();if(ex)await sb.from('proyecto_materiales').update({cantidad_pedida:ex.cantidad_pedida+val}).eq('id',ex.id);}
+  toast('✓ Pedido guardado');nav('pedidos');
 }
 
-// ---- VISTA PREVIA PEDIDO EN LISTA ----
-let pedidoPreviewData = null;
-
-async function verPedido(pedidoId, numero) {
-  const {data: ped} = await sb.from('pedidos').select('*, pedido_materiales(*)').eq('id', pedidoId).single();
-  if(!ped) return;
-  pedidoPreviewData = {...ped, numero};
-  const fecha = ped.fecha ? new Date(ped.fecha+'T12:00:00').toLocaleDateString('es-AR') : hoy();
-  document.getElementById('ped-preview-titulo').textContent = `Pedido #${numero}`;
-  document.getElementById('ped-preview-sub').textContent = fecha + (ped.enviado ? ' · Enviado al corralón' : ' · Pendiente de envío');
-  document.getElementById('btn-toggle-enviado').textContent = ped.enviado ? 'Marcar como no enviado' : 'Marcar como enviado';
-
-  const mats = ped.pedido_materiales || [];
-  let html = '';
-  for(const grp of GRUPOS_ORDEN) {
-    const items = mats.filter(m => GRUPOS_MAT[grp] && GRUPOS_MAT[grp].some(g => m.material.startsWith(g)));
-    if(!items.length) continue;
-    html += `<div class="card"><div class="grp-label">${grp}</div>`;
-    items.forEach(m => {
-      html += `<div class="res-row"><span>${m.material}</span><span class="res-qty">${fmtVal(m.cantidad)} ${m.unidad}</span></div>`;
-    });
-    html += '</div>';
-  }
-  document.getElementById('ped-preview-contenido').innerHTML = html;
-  document.getElementById('pedidos-contenido').style.display = 'none';
-  document.getElementById('pedido-preview').style.display = 'block';
+// RENDER
+function leerMatsDirectos(pre){
+  const campos=[{id:pre+'-arena-g',mat:'Arena gruesa',u:'m³'},{id:pre+'-arena-f',mat:'Arena fina',u:'m³'},{id:pre+'-cto-port',mat:'Cemento Portland',u:'kg'},{id:pre+'-cto-alb',mat:'Cemento albañilería',u:'kg'},{id:pre+'-cal',mat:'Cal hidratada',u:'kg'},{id:pre+'-brimax-u',mat:'Ladrillo Brimax 12.5',u:'u'},{id:pre+'-comun-u',mat:'Ladrillo común',u:'u'},{id:pre+'-adhesivo',mat:'Adhesivo cementicio',u:'kg'},{id:pre+'-stuko-i',mat:'Stuko interior',u:'bol'},{id:pre+'-hidro',mat:'Hidrófugo líquido',u:'L'},{id:pre+'-klaukol',mat:'Adhesivo Klaukol',u:'kg'},{id:pre+'-piedra',mat:'Piedra partida',u:'m³'}];
+  const t={};campos.forEach(c=>{const el=document.getElementById(c.id);const val=el?parseFloat(el.value)||0:0;if(val>0)t[c.mat]={val,u:c.u};});return t;
 }
-
-function cerrarPedidoPreview() {
-  document.getElementById('pedidos-contenido').style.display = 'block';
-  document.getElementById('pedido-preview').style.display = 'none';
-  pedidoPreviewData = null;
-}
-
-async function toggleEnviadoPreview() {
-  if(!pedidoPreviewData) return;
-  const nuevo = !pedidoPreviewData.enviado;
-  await sb.from('pedidos').update({enviado: nuevo}).eq('id', pedidoPreviewData.id);
-  pedidoPreviewData.enviado = nuevo;
-  document.getElementById('btn-toggle-enviado').textContent = nuevo ? 'Marcar como no enviado' : 'Marcar como enviado';
-  document.getElementById('ped-preview-sub').textContent = 
-    (pedidoPreviewData.fecha ? new Date(pedidoPreviewData.fecha+'T12:00:00').toLocaleDateString('es-AR') : hoy()) +
-    (nuevo ? ' · Enviado al corralón' : ' · Pendiente de envío');
-  toast(nuevo ? '✓ Marcado como enviado' : 'Marcado como pendiente');
-}
-
-function imprimirPedidoPreview() {
-  if(!pedidoPreviewData) return;
-  abrirPDFPedido(pedidoPreviewData.id, pedidoPreviewData.numero);
-}
-
-function compartirPedido() {
-  const texto = generarTextoPedido();
-  if(navigator.share) {
-    navigator.share({title: 'Pedido de materiales', text: texto});
-  } else if(navigator.clipboard) {
-    navigator.clipboard.writeText(texto);
-    toast('✓ Copiado al portapapeles');
-  }
-}
-
-function generarTextoPedido() {
-  const obra = proyActivo ? proyActivo.nombre + (proyActivo.localidad?' — '+proyActivo.localidad:'') : '';
-  let txt = `PEDIDO DE MATERIALES\n${obra}\nFecha: ${hoy()}\n\n`;
-  const mats = pedidoPreviewData?.pedido_materiales || Object.entries(pedidoTotales).map(([m,{val,u}])=>({material:m,cantidad:val,unidad:u}));
-  mats.forEach(m => { txt += `${m.material}: ${fmtVal(m.cantidad)} ${m.unidad}\n`; });
-  return txt;
-}
-
-// ---- INFORMES ----
-async function buscarInformes() {
-  const proyId = document.getElementById('inf-proyecto').value;
-  const tipo = document.getElementById('inf-tipo').value;
-  const cont = document.getElementById('inf-contenido');
-  const res = document.getElementById('inf-resultados');
-  cont.innerHTML = '<div class="loading">Buscando...</div>';
-  res.style.display = 'block';
-
-  if(tipo === 'pedidos') {
-    let query = sb.from('pedidos').select('*, proyectos(nombre,localidad), pedido_materiales(*)').order('fecha', {ascending:false});
-    if(proyId) query = query.eq('proyecto_id', proyId);
-    const {data} = await query;
-    if(!data || data.length===0) { cont.innerHTML = '<div class="card"><div class="empty">Sin pedidos para los filtros seleccionados</div></div>'; return; }
-    let html = '';
-    data.forEach((p,i) => {
-      const fecha = p.fecha ? new Date(p.fecha+'T12:00:00').toLocaleDateString('es-AR') : '';
-      const obra = p.proyectos ? p.proyectos.nombre + (p.proyectos.localidad?' — '+p.proyectos.localidad:'') : '';
-      const mats = (p.pedido_materiales||[]);
-      let matsHtml = '';
-      for(const grp of GRUPOS_ORDEN) {
-        const items = mats.filter(m => GRUPOS_MAT[grp] && GRUPOS_MAT[grp].some(g => m.material.startsWith(g)));
-        if(!items.length) continue;
-        matsHtml += `<div class="grp-label" style="margin-top:8px">${grp}</div>`;
-        items.forEach(m => { matsHtml += `<div class="res-row"><span>${m.material}</span><span class="res-qty">${fmtVal(m.cantidad)} ${m.unidad}</span></div>`; });
-      }
-      html += `<div class="card"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.75rem">
-        <div><div style="font-weight:600;font-size:14px">Pedido #${data.length-i} — ${obra}</div><div class="psub">${fecha} · ${p.enviado?'Enviado':'Pendiente'}</div></div>
-      </div>${matsHtml}</div>`;
-    });
-    cont.innerHTML = html;
-  } else {
-    cont.innerHTML = '<div class="card"><div class="loading">Este tipo de informe estará disponible próximamente</div></div>';
-  }
-}
-
-function compartirInforme() {
-  if(navigator.clipboard) {
-    navigator.clipboard.writeText(document.getElementById('inf-contenido').innerText);
-    toast('✓ Copiado al portapapeles');
-  }
-}
-
-// ---- PEDIDOS ----
-async function cargarPedidos() {
-  if(!proyActivo) return;
-  const {data} = await sb.from('pedidos').select('*, pedido_materiales(*)').eq('proyecto_id', proyActivo.id).order('fecha', {ascending:false});
-  const cont = document.getElementById('pedidos-contenido');
-  if(!data || data.length===0) {
-    cont.innerHTML = '<div class="empty"><div class="empty-icon">📦</div><div style="font-weight:600;color:#777;margin-bottom:4px">Sin pedidos todavía</div><div style="font-size:13px">Creá el primer pedido con el botón de arriba</div></div>';
-    return;
-  }
-  let html = '<div class="card"><table class="pedido-tabla"><thead><tr><th>Pedido</th><th>Fecha</th><th>Materiales</th><th style="text-align:center">Enviado</th><th style="text-align:right">PDF</th></tr></thead><tbody>';
-  data.forEach((p,i) => {
-    const fecha = p.fecha ? new Date(p.fecha+'T12:00:00').toLocaleDateString('es-AR') : '';
-    const mats = p.pedido_materiales ? p.pedido_materiales.slice(0,2).map(m=>m.material).join(', ') : '';
-    const chkClass = p.enviado ? 'on' : '';
-    html += `<tr>
-      <td style="font-weight:600">Pedido #${data.length - i}</td>
-      <td style="color:#777">${fecha}</td>
-      <td style="color:#777">${mats}</td>
-      <td style="text-align:center"><div class="chk ${chkClass}" onclick="toggleEnviado('${p.id}', ${p.enviado}, this)"><svg viewBox="0 0 10 10"><polyline points="1.5,5 4,7.5 8.5,2.5"/></svg></div></td>
-      <td style="text-align:right"><button class="btn" style="padding:4px 10px;font-size:11px" onclick="verPedido('${p.id}', ${data.length - i})">Ver →</button></td>
-    </tr>`;
-  });
-  html += '</tbody></table></div>';
-  cont.innerHTML = html;
-}
-
-async function toggleEnviado(id, actual, el) {
-  const nuevo = !actual;
-  el.classList.toggle('on');
-  await sb.from('pedidos').update({enviado: nuevo}).eq('id', id);
-  toast(nuevo ? 'Marcado como enviado' : 'Marcado como no enviado');
-}
-
-// ---- NUEVO PROYECTO ----
-function irPaso2() {
-  const nombre = document.getElementById('np-nombre').value.trim();
-  if(!nombre) { toast('Ingresá el nombre de la obra'); return; }
-  npData.nombre = nombre;
-  npData.localidad = document.getElementById('np-localidad').value.trim();
-  npData.fecha = document.getElementById('np-fecha').value;
-  npData.estado = document.getElementById('np-estado').value;
-  document.getElementById('np2-titulo').textContent = nombre + (npData.localidad?' — '+npData.localidad:'');
-  document.getElementById('np2-sub').textContent = 'Completá las cantidades de cada tarea';
-  nav('np-paso2');
-}
-
-function setModoNP(modo, btn) {
-  modoNP = modo;
-  document.querySelectorAll('#pg-np-paso2 .mode-toggle .mbtn').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  document.getElementById('np-modo-tareas').style.display = modo==='tareas'?'block':'none';
-  document.getElementById('np-modo-mats').style.display = modo==='mats'?'block':'none';
-}
-
-function setModoPedido(modo, btn) {
-  document.querySelectorAll('#pg-nuevo-pedido .mode-toggle .mbtn').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  document.getElementById('ped-modo-tareas').style.display = modo==='tareas'?'block':'none';
-  document.getElementById('ped-modo-mats').style.display = modo==='mats'?'block':'none';
-}
-
-function calcularDesdeInputs(mapa) {
-  const totales = {};
-  for(const [rubro, id] of Object.entries(mapa)) {
-    const el = document.getElementById(id);
-    const val = el ? parseFloat(el.value)||0 : 0;
-    if(val<=0) continue;
-    for(const [mat, obj] of Object.entries(REND[rubro])) {
-      if(!totales[mat]) totales[mat]={val:0,u:obj.u};
-      totales[mat].val += obj.f(val);
-    }
-  }
-  return totales;
-}
-
-function calcularNuevoProyecto() {
-  let totales;
-  if(modoNP==='tareas') {
-    // Guardar también las tareas ingresadas
-    const tareasMap = {
-      'np-brimax': {tarea:'Muro ladrillo Brimax 12.5 cm', rubro:'Mampostería', u:'m²'},
-      'np-cer12':  {tarea:'Muro ladrillo cerámico portante 12', rubro:'Mampostería', u:'m²'},
-      'np-cer18':  {tarea:'Muro ladrillo cerámico portante 18', rubro:'Mampostería', u:'m²'},
-      'np-comun':  {tarea:'Muro ladrillo común 15 cm', rubro:'Mampostería', u:'m²'},
-      'np-azotado':{tarea:'Azotado hidrófugo', rubro:'Revoques', u:'m²'},
-      'np-revgrueso':{tarea:'Revoque grueso', rubro:'Revoques', u:'m²'},
-      'np-stuko-int':{tarea:'Stuko interior', rubro:'Revoques', u:'m²'},
-      'np-stuko-ext':{tarea:'Stuko exterior', rubro:'Revoques', u:'m²'},
-      'np-contrapiso':{tarea:'Contrapiso H15', rubro:'Pisos', u:'m²'},
-      'np-ceramicos':{tarea:'Pegado de cerámicos', rubro:'Pisos', u:'m²'},
-    };
-    npData.tareas = [];
-    for(const [id, info] of Object.entries(tareasMap)) {
-      const el = document.getElementById(id);
-      const val = el ? parseFloat(el.value)||0 : 0;
-      if(val>0) npData.tareas.push({rubro: info.rubro, tarea: info.tarea, cantidad: val, unidad: info.u});
-    }
-    totales = calcularDesdeInputs({
-      brimax:'np-brimax', cer12:'np-cer12', cer18:'np-cer18', comun:'np-comun',
-      azotado:'np-azotado', revgrueso:'np-revgrueso', stukoInt:'np-stuko-int', stukoExt:'np-stuko-ext',
-      contrapiso:'np-contrapiso', ceramicos:'np-ceramicos'
-    });
-  } else {
-    npData.tareas = [];
-    totales = leerMatsDirectos('npm');
-  }
-  npData.totales = totales;
-  document.getElementById('np3-titulo').textContent = npData.nombre + (npData.localidad?' — '+npData.localidad:'');
-  document.getElementById('np3-sub').textContent = 'Cómputo total de la obra';
-  document.getElementById('np3-resultado').innerHTML = renderResultado(totales);
-  nav('np-paso3');
-}
-
-function leerMatsDirectos(pre) {
-  const campos = [
-    {id:pre+'-arena-g',mat:'Arena gruesa',u:'m³'},{id:pre+'-arena-f',mat:'Arena fina',u:'m³'},
-    {id:pre+'-piedra',mat:'Piedra partida',u:'m³'},{id:pre+'-cto-port',mat:'Cemento Portland',u:'kg'},
-    {id:pre+'-cto-alb',mat:'Cemento albañilería',u:'kg'},{id:pre+'-cal',mat:'Cal hidratada',u:'kg'},
-    {id:pre+'-brimax-u',mat:'Ladrillo Brimax 12.5',u:'u'},{id:pre+'-cer-u',mat:'Ladrillo cerámico portante',u:'u'},
-    {id:pre+'-comun-u',mat:'Ladrillo común',u:'u'},{id:pre+'-adhesivo',mat:'Adhesivo cementicio',u:'kg'},
-    {id:pre+'-stuko-i',mat:'Stuko interior',u:'bol'},{id:pre+'-stuko-e',mat:'Stuko exterior',u:'bol'},
-    {id:pre+'-hidro',mat:'Hidrófugo líquido',u:'L'},{id:pre+'-klaukol',mat:'Adhesivo Klaukol',u:'kg'},
-  ];
-  const totales = {};
-  for(const c of campos) {
-    const el = document.getElementById(c.id);
-    const val = el ? parseFloat(el.value)||0 : 0;
-    if(val>0) totales[c.mat]={val,u:c.u};
-  }
-  return totales;
-}
-
-function renderResultado(totales) {
-  if(!totales || Object.keys(totales).length===0)
-    return '<div class="card" style="text-align:center;padding:2.5rem;color:#999">Ingresá al menos una cantidad para ver el cómputo.</div>';
-  let html = '';
-  for(const grp of GRUPOS_ORDEN) {
-    const mats = GRUPOS_MAT[grp].filter(m=>totales[m]&&totales[m].val>0);
-    if(!mats.length) continue;
-    html += `<div class="card"><div class="grp-label">${grp}</div>`;
-    for(const m of mats) {
-      const {val,u} = totales[m];
-      html += `<div class="res-row"><span>${m}</span><span class="res-qty">${fmtVal(val)} ${u}</span></div>`;
-    }
-    html += '</div>';
-  }
+function renderResultado(totales){
+  if(!totales||Object.keys(totales).length===0)return'<div class="card" style="text-align:center;padding:2.5rem;color:#999">Ingresá al menos una cantidad.</div>';
+  let html='';
+  for(const grp of GRUPOS_ORDEN){const mats=GRUPOS_MAT[grp].filter(m=>totales[m]&&totales[m].val>0);if(!mats.length)continue;html+=`<div class="card"><div class="grp-label">${grp}</div>`;mats.forEach(m=>{const{val,u}=totales[m];html+=`<div class="res-row"><span>${m}</span><span class="res-qty">${fmtVal(val)} ${u}</span></div>`;});html+='</div>';}
   return html;
 }
-
-async function guardarProyecto() {
-  const btn = document.getElementById('btn-guardar-proyecto');
-  btn.disabled = true;
-  btn.textContent = 'Guardando...';
-  const {data: proj, error} = await sb.from('proyectos').insert({
-    nombre: npData.nombre,
-    localidad: npData.localidad || null,
-    fecha_inicio: npData.fecha || null,
-    estado: npData.estado || 'en-curso',
-  }).select().single();
-  if(error || !proj) { toast('Error al guardar'); btn.disabled=false; btn.textContent='Guardar proyecto ✓'; return; }
-
-  const mats = Object.entries(npData.totales||{}).map(([mat,{val,u}])=>({
-    proyecto_id: proj.id, material: mat, cantidad_total: val, cantidad_pedida: 0, unidad: u
-  }));
-  if(mats.length) await sb.from('proyecto_materiales').insert(mats);
-
-  // Guardar tareas del proyecto
-  const tareas = (npData.tareas||[]).map(t=>({
-    proyecto_id: proj.id, rubro: t.rubro, tarea: t.tarea, cantidad: t.cantidad, unidad: t.unidad
-  }));
-  if(tareas.length) await sb.from('proyecto_tareas').insert(tareas);
-
-  proyActivo = proj;
-  document.getElementById('sidebar-proj-name').textContent = proj.nombre;
-  document.getElementById('computo-sub').textContent = proj.nombre + (proj.localidad?' — '+proj.localidad:'');
-  document.getElementById('pedidos-sub').textContent = proj.nombre + (proj.localidad?' — '+proj.localidad:'');
-  toast('✓ Proyecto guardado');
-  btn.disabled=false; btn.textContent='Guardar proyecto ✓';
-  nav('computo');
+function renderResultadoConTareas(totales,tareas){
+  let html='';
+  if(tareas&&tareas.length>0){html+='<div class="card"><div class="grp-label">Tareas a ejecutar</div>';tareas.forEach(t=>{html+=`<div class="res-row"><span>${t.tarea}</span><span class="res-qty">${fmtVal(t.cantidad)} ${t.unidad}</span></div>`;});html+='</div>';}
+  return html+renderResultado(totales);
 }
 
-async function confirmarEliminar() {
-  if(!proyActivo) return;
-  if(!confirm(`¿Eliminár el proyecto "${proyActivo.nombre}"? Esta acción no se puede deshacer.`)) return;
-  await sb.from('proyectos').delete().eq('id', proyActivo.id);
-  proyActivo = null;
-  document.getElementById('sidebar-proj-name').textContent = '— ninguno —';
-  toast('Proyecto eliminado');
-  nav('inicio');
-}
-
-// ---- NUEVO PEDIDO ----
-function calcularPedido() {
-  const totales = calcularDesdeInputs({
-    brimax:'p-brimax', cer12:'p-cer12', comun:'p-comun',
-    azotado:'p-azotado', revgrueso:'p-revgrueso', stukoInt:'p-stuko',
-    contrapiso:'p-contrapiso', ceramicos:'p-pegado'
-  });
-  pedidoTotales = totales;
-  document.getElementById('ped-res-sub').textContent = (proyActivo?.nombre||'') + ' · ' + hoy();
-  document.getElementById('ped-res-contenido').innerHTML = renderResultado(totales);
-  nav('pedido-resultado');
-}
-
-async function guardarPedido() {
-  if(!proyActivo) { toast('Seleccioná un proyecto primero'); return; }
-  const {data: ped, error} = await sb.from('pedidos').insert({
-    proyecto_id: proyActivo.id,
-    fecha: new Date().toISOString().split('T')[0],
-    enviado: false,
-  }).select().single();
-  if(error || !ped) { toast('Error al guardar pedido'); return; }
-
-  const mats = Object.entries(pedidoTotales).map(([mat,{val,u}])=>({
-    pedido_id: ped.id, material: mat, cantidad: val, unidad: u
-  }));
-  if(mats.length) await sb.from('pedido_materiales').insert(mats);
-
-  // Actualizar cantidad pedida en cómputo
-  for(const [mat, {val}] of Object.entries(pedidoTotales)) {
-    const {data: existing} = await sb.from('proyecto_materiales').select('*').eq('proyecto_id', proyActivo.id).eq('material', mat).single();
-    if(existing) {
-      await sb.from('proyecto_materiales').update({cantidad_pedida: existing.cantidad_pedida + val}).eq('id', existing.id);
-    }
-  }
-
-  toast('✓ Pedido guardado');
-  nav('pedidos');
-}
-
-async function guardarPedidoDirecto() {
-  const totales = leerMatsDirectos('pm');
-  pedidoTotales = totales;
-  await guardarPedido();
-}
-
-// ---- PDF PEDIDO ----
-async function abrirPDFPedido(pedidoId, numeroPedido) {
-  const {data: ped} = await sb.from('pedidos').select('*, pedido_materiales(*)').eq('id', pedidoId).single();
-  if(!ped) return;
-  const fecha = ped.fecha ? new Date(ped.fecha+'T12:00:00').toLocaleDateString('es-AR') : hoy();
-  const mats = ped.pedido_materiales || [];
-
-  // Agrupar materiales
-  const grupos = {};
-  for(const grp of GRUPOS_ORDEN) {
-    const items = mats.filter(m => GRUPOS_MAT[grp] && GRUPOS_MAT[grp].some(g => m.material.startsWith(g)));
-    if(items.length) grupos[grp] = items;
-  }
-
-  let tablaHTML = '';
-  for(const [grp, items] of Object.entries(grupos)) {
-    tablaHTML += `<div style="margin-bottom:1.25rem">
-      <div class="pdf-section-title">${grp}</div>`;
-    for(const m of items) {
-      tablaHTML += `<div class="pdf-mat-row">
-        <span class="pdf-mat-nombre">${m.material}</span>
-        <span class="pdf-mat-qty">${fmtVal(m.cantidad)} ${m.unidad}</span>
-      </div>`;
-    }
-    tablaHTML += '</div>';
-  }
-
-  const obra = proyActivo ? proyActivo.nombre + (proyActivo.localidad ? ' — ' + proyActivo.localidad : '') : '';
-
-  document.getElementById('pdf-body').innerHTML = `
-    <div class="pdf-header">
-      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#185FA5;margin-bottom:6px">Pedido de materiales</div>
-      <div class="pdf-obra">${obra}</div>
-      <div class="pdf-meta">
-        <span><span class="pdf-meta-lbl">Pedido Nº</span><span class="pdf-meta-val">#${numeroPedido}</span></span>
-        <span><span class="pdf-meta-lbl">Fecha</span><span class="pdf-meta-val">${fecha}</span></span>
-        <span><span class="pdf-meta-lbl">Estado</span><span class="pdf-meta-val">${ped.enviado ? 'Enviado al corralón' : 'Pendiente de envío'}</span></span>
-      </div>
-    </div>
-    ${tablaHTML}
-    <div class="pdf-firma">
-      <div class="pdf-firma-box">Firma responsable de obra</div>
-      <div class="pdf-firma-box">Recibido por corralón</div>
-    </div>
-    <div class="pdf-footer">Gestor de Materiales · Generado el ${hoy()}</div>
-  `;
-
+// PDF
+async function abrirPDFPedido(pedidoId,numero){
+  const{data:ped}=await sb.from('pedidos').select('*, pedido_materiales(*), pedido_tareas(*)').eq('id',pedidoId).single();
+  if(!ped)return;
+  const obra=proyActivo?proyActivo.nombre+(proyActivo.localidad?' — '+proyActivo.localidad:''):'';
+  let tablaHTML='';
+  if(ped.pedido_tareas&&ped.pedido_tareas.length>0){tablaHTML+='<div style="margin-bottom:1.25rem"><div class="pdf-section-title">Tareas ejecutadas</div>';ped.pedido_tareas.forEach(t=>{tablaHTML+=`<div class="pdf-mat-row"><span>${t.tarea}</span><span class="pdf-mat-qty">${fmtVal(t.cantidad)} ${t.unidad}</span></div>`;});tablaHTML+='</div>';}
+  for(const grp of GRUPOS_ORDEN){const items=(ped.pedido_materiales||[]).filter(m=>GRUPOS_MAT[grp]&&GRUPOS_MAT[grp].some(g=>m.material.startsWith(g)));if(!items.length)continue;tablaHTML+=`<div style="margin-bottom:1.25rem"><div class="pdf-section-title">${grp}</div>`;items.forEach(m=>{tablaHTML+=`<div class="pdf-mat-row"><span>${m.material}</span><span class="pdf-mat-qty">${fmtVal(m.cantidad)} ${m.unidad}</span></div>`;});tablaHTML+='</div>';}
+  let extra='';
+  if(ped.etiqueta||ped.comentario||ped.rubro_vinculado){extra='<div style="margin-top:1rem;padding:1rem;background:#f5f5f3;border-radius:8px;font-size:12px;color:#555">';if(ped.rubro_vinculado)extra+=`<div>Vinculado a: <strong>${ped.rubro_vinculado}</strong></div>`;if(ped.etiqueta&&ETIQUETAS[ped.etiqueta])extra+=`<div style="margin-top:4px">Motivo: ${ETIQUETAS[ped.etiqueta].label}</div>`;if(ped.comentario)extra+=`<div style="margin-top:4px;font-style:italic">"${ped.comentario}"</div>`;extra+='</div>';}
+  document.getElementById('pdf-body').innerHTML=`<div class="pdf-header"><div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#185FA5;margin-bottom:6px">Pedido de materiales</div><div class="pdf-obra">${obra}</div><div class="pdf-meta"><span><span class="pdf-meta-lbl">Pedido Nº</span><span class="pdf-meta-val">#${numero}</span></span><span><span class="pdf-meta-lbl">Fecha</span><span class="pdf-meta-val">${fmtFecha(ped.fecha)}</span></span><span><span class="pdf-meta-lbl">Estado</span><span class="pdf-meta-val">${ped.enviado?'Enviado al corralón':'Pendiente de envío'}</span></span></div></div>${tablaHTML}${extra}<div class="pdf-firma"><div class="pdf-firma-box">Firma responsable de obra</div><div class="pdf-firma-box">Recibido por corralón</div></div><div class="pdf-footer">Gestor de Materiales · Generado el ${hoy()}</div>`;
   document.getElementById('pdf-overlay').classList.add('open');
 }
-
-function cerrarPDF(e) {
-  if(e.target === document.getElementById('pdf-overlay')) cerrarPDFBtn();
-}
-function cerrarPDFBtn() {
-  document.getElementById('pdf-overlay').classList.remove('open');
-}
-
-function abrirPDFPedidoActual() {
-  // Para el pedido recién calculado (antes de guardar)
-  const obra = proyActivo ? proyActivo.nombre + (proyActivo.localidad ? ' — ' + proyActivo.localidad : '') : '';
-  const grupos = {};
-  for(const grp of GRUPOS_ORDEN) {
-    const items = Object.entries(pedidoTotales)
-      .filter(([mat]) => GRUPOS_MAT[grp] && GRUPOS_MAT[grp].some(g => mat.startsWith(g)))
-      .map(([mat,{val,u}]) => ({material:mat, cantidad:val, unidad:u}));
-    if(items.length) grupos[grp] = items;
-  }
-  let tablaHTML = '';
-  for(const [grp, items] of Object.entries(grupos)) {
-    tablaHTML += `<div style="margin-bottom:1.25rem"><div class="pdf-section-title">${grp}</div>`;
-    for(const m of items) {
-      tablaHTML += `<div class="pdf-mat-row"><span class="pdf-mat-nombre">${m.material}</span><span class="pdf-mat-qty">${fmtVal(m.cantidad)} ${m.unidad}</span></div>`;
-    }
-    tablaHTML += '</div>';
-  }
-  document.getElementById('pdf-body').innerHTML = `
-    <div class="pdf-header">
-      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#185FA5;margin-bottom:6px">Pedido de materiales</div>
-      <div class="pdf-obra">${obra}</div>
-      <div class="pdf-meta">
-        <span><span class="pdf-meta-lbl">Fecha</span><span class="pdf-meta-val">${hoy()}</span></span>
-        <span><span class="pdf-meta-lbl">Estado</span><span class="pdf-meta-val">Pendiente de envío</span></span>
-      </div>
-    </div>
-    ${tablaHTML}
-    <div class="pdf-firma">
-      <div class="pdf-firma-box">Firma responsable de obra</div>
-      <div class="pdf-firma-box">Recibido por corralón</div>
-    </div>
-    <div class="pdf-footer">Gestor de Materiales · Generado el ${hoy()}</div>
-  `;
+function abrirPDFPedidoActual(){
+  const obra=proyActivo?proyActivo.nombre+(proyActivo.localidad?' — '+proyActivo.localidad:''):'';
+  let tablaHTML='';
+  if(pedidoTareas.length>0){tablaHTML+='<div style="margin-bottom:1.25rem"><div class="pdf-section-title">Tareas a ejecutar</div>';pedidoTareas.forEach(t=>{tablaHTML+=`<div class="pdf-mat-row"><span>${t.tarea}</span><span class="pdf-mat-qty">${fmtVal(t.cantidad)} ${t.unidad}</span></div>`;});tablaHTML+='</div>';}
+  for(const grp of GRUPOS_ORDEN){const mats=GRUPOS_MAT[grp].filter(m=>pedidoTotales[m]&&pedidoTotales[m].val>0);if(!mats.length)continue;tablaHTML+=`<div style="margin-bottom:1.25rem"><div class="pdf-section-title">${grp}</div>`;mats.forEach(m=>{const{val,u}=pedidoTotales[m];tablaHTML+=`<div class="pdf-mat-row"><span>${m}</span><span class="pdf-mat-qty">${fmtVal(val)} ${u}</span></div>`;});tablaHTML+='</div>';}
+  document.getElementById('pdf-body').innerHTML=`<div class="pdf-header"><div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#185FA5;margin-bottom:6px">Pedido de materiales</div><div class="pdf-obra">${obra}</div><div class="pdf-meta"><span><span class="pdf-meta-lbl">Fecha</span><span class="pdf-meta-val">${hoy()}</span></span><span><span class="pdf-meta-lbl">Estado</span><span class="pdf-meta-val">Pendiente de envío</span></span></div></div>${tablaHTML}<div class="pdf-firma"><div class="pdf-firma-box">Firma responsable de obra</div><div class="pdf-firma-box">Recibido por corralón</div></div><div class="pdf-footer">Gestor de Materiales · Generado el ${hoy()}</div>`;
   document.getElementById('pdf-overlay').classList.add('open');
 }
+function cerrarPDF(e){if(e.target===document.getElementById('pdf-overlay'))cerrarPDFBtn();}
+function cerrarPDFBtn(){document.getElementById('pdf-overlay').classList.remove('open');}
 
-// Cargar proyectos al inicio
-cargarProyectos();
+// COMPARTIR
+function compartirPedido(){
+  const obra=proyActivo?proyActivo.nombre+(proyActivo.localidad?' — '+proyActivo.localidad:''):'';
+  let txt=`PEDIDO DE MATERIALES\n${obra}\nFecha: ${hoy()}\n\n`;
+  if(pedidoTareas.length>0){txt+='TAREAS:\n';pedidoTareas.forEach(t=>{txt+=`${t.tarea}: ${fmtVal(t.cantidad)} ${t.unidad}\n`;});txt+='\n';}
+  txt+='MATERIALES:\n';
+  const mats=pedidoPreviewData?.pedido_materiales||Object.entries(pedidoTotales).map(([m,{val,u}])=>({material:m,cantidad:val,unidad:u}));
+  mats.forEach(m=>{txt+=`${m.material}: ${fmtVal(m.cantidad)} ${m.unidad}\n`;});
+  if(navigator.share)navigator.share({title:'Pedido de materiales',text:txt});
+  else if(navigator.clipboard){navigator.clipboard.writeText(txt);toast('✓ Copiado al portapapeles');}
+}
+
+// INFORMES
+async function cargarHistorialInformes(){
+  if(!usuarioActual)return;
+  const{data}=await sb.from('pedidos').select('*, proyectos!inner(nombre,localidad,user_id)').eq('proyectos.user_id',usuarioActual.id).order('created_at',{ascending:false}).limit(10);
+  const cont=document.getElementById('inf-historial');
+  if(!data||data.length===0){cont.innerHTML='<div style="font-size:13px;color:#999;text-align:center;padding:1rem">Sin informes todavía</div>';return;}
+  cont.innerHTML=data.map(p=>{
+    const obra=p.proyectos?p.proyectos.nombre+(p.proyectos.localidad?' — '+p.proyectos.localidad:''):'';
+    const etiq=p.etiqueta&&ETIQUETAS[p.etiqueta]?`<span class="etiqueta-badge ${ETIQUETAS[p.etiqueta].cls}">${ETIQUETAS[p.etiqueta].label}</span>`:'';
+    const tipo=p.tipo_carga==='mats'?'Materiales directos':'Por tareas';
+    return`<div class="inf-item"><div><div class="inf-titulo">${obra} ${etiq}</div><div class="inf-meta">${fmtFecha(p.fecha)} · ${tipo} · ${p.enviado?'Enviado':'Pendiente'}</div></div><button class="btn" style="padding:4px 10px;font-size:11px;flex-shrink:0" onclick="verPedidoDesdeInforme('${p.id}','${obra.replace(/'/g,"\\'")}')">Ver →</button></div>`;
+  }).join('');
+}
+async function verPedidoDesdeInforme(id,obraLabel){
+  const{data:ped}=await sb.from('pedidos').select('*, pedido_materiales(*), pedido_tareas(*)').eq('id',id).single();
+  if(!ped)return;
+  pedidoPreviewData=ped;
+  let html=`<div class="card"><div style="font-size:14px;font-weight:600;margin-bottom:.5rem">${obraLabel}</div><div class="psub">${fmtFecha(ped.fecha)} · ${ped.enviado?'Enviado al corralón':'Pendiente'}</div></div>`;
+  if(ped.pedido_tareas&&ped.pedido_tareas.length>0){html+='<div class="card"><div class="grp-label">Tareas ejecutadas</div>';ped.pedido_tareas.forEach(t=>{html+=`<div class="res-row"><span>${t.tarea}</span><span class="res-qty">${fmtVal(t.cantidad)} ${t.unidad}</span></div>`;});html+='</div>';}
+  for(const grp of GRUPOS_ORDEN){const items=(ped.pedido_materiales||[]).filter(m=>GRUPOS_MAT[grp]&&GRUPOS_MAT[grp].some(g=>m.material.startsWith(g)));if(!items.length)continue;html+=`<div class="card"><div class="grp-label">${grp}</div>`;items.forEach(m=>{html+=`<div class="res-row"><span>${m.material}</span><span class="res-qty">${fmtVal(m.cantidad)} ${m.unidad}</span></div>`;});html+='</div>';}
+  document.getElementById('inf-contenido').innerHTML=html;
+  document.getElementById('inf-resultados').style.display='block';
+}
+async function buscarInformes(){
+  const proyId=document.getElementById('inf-proyecto').value;
+  const tipo=document.getElementById('inf-tipo').value;
+  const cont=document.getElementById('inf-contenido');
+  document.getElementById('inf-resultados').style.display='block';
+  cont.innerHTML='<div class="loading">Buscando...</div>';
+  if(tipo==='pedidos'||tipo==='desvios'){
+    let query=sb.from('pedidos').select('*, proyectos!inner(nombre,localidad,user_id), pedido_materiales(*), pedido_tareas(*)').eq('proyectos.user_id',usuarioActual.id).order('fecha',{ascending:false});
+    if(proyId)query=query.eq('proyecto_id',proyId);
+    if(tipo==='desvios')query=query.not('etiqueta','is',null);
+    const{data}=await query;
+    if(!data||data.length===0){cont.innerHTML='<div class="card"><div class="empty">Sin resultados para los filtros seleccionados</div></div>';return;}
+    let html='';
+    data.forEach((p,i)=>{
+      const obra=p.proyectos?p.proyectos.nombre+(p.proyectos.localidad?' — '+p.proyectos.localidad:''):'';
+      const etiq=p.etiqueta&&ETIQUETAS[p.etiqueta]?`<span class="etiqueta-badge ${ETIQUETAS[p.etiqueta].cls}">${ETIQUETAS[p.etiqueta].label}</span>`:'';
+      let matsHtml='';
+      if(p.pedido_tareas&&p.pedido_tareas.length>0){matsHtml+='<div class="grp-label" style="margin-top:8px">Tareas</div>';p.pedido_tareas.forEach(t=>{matsHtml+=`<div class="res-row"><span>${t.tarea}</span><span class="res-qty">${fmtVal(t.cantidad)} ${t.unidad}</span></div>`;});}
+      for(const grp of GRUPOS_ORDEN){const items=(p.pedido_materiales||[]).filter(m=>GRUPOS_MAT[grp]&&GRUPOS_MAT[grp].some(g=>m.material.startsWith(g)));if(!items.length)continue;matsHtml+=`<div class="grp-label" style="margin-top:8px">${grp}</div>`;items.forEach(m=>{matsHtml+=`<div class="res-row"><span>${m.material}</span><span class="res-qty">${fmtVal(m.cantidad)} ${m.unidad}</span></div>`;});}
+      let extraHtml='';if(p.rubro_vinculado||p.etiqueta||p.comentario){extraHtml='<div style="margin-top:8px;font-size:12px;color:#555">';if(p.rubro_vinculado)extraHtml+=`Vinculado a: <strong>${p.rubro_vinculado}</strong> `;if(p.comentario)extraHtml+=`· "${p.comentario}"`;extraHtml+='</div>';}
+      html+=`<div class="card"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.75rem"><div><div style="font-weight:600;font-size:14px">${obra} ${etiq}</div><div class="psub">${fmtFecha(p.fecha)} · ${p.enviado?'Enviado':'Pendiente'}</div></div></div>${matsHtml}${extraHtml}</div>`;
+    });
+    cont.innerHTML=html;
+  }else{cont.innerHTML='<div class="card"><div class="loading">Este tipo de informe estará disponible próximamente</div></div>';}
+}
+function compartirInforme(){if(navigator.clipboard){navigator.clipboard.writeText(document.getElementById('inf-contenido').innerText);toast('✓ Copiado al portapapeles');}}
+
+// INIT
+sb.auth.getSession().then(({data:{session}})=>{if(session)iniciarApp(session.user);});
+sb.auth.onAuthStateChange((_,session)=>{if(session&&!usuarioActual)iniciarApp(session.user);});
 </script>
 </body>
 </html>
